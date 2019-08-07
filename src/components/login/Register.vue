@@ -34,7 +34,6 @@
 export default {
   name: "Register", 
   data() {
-    
     // <!--验证密码-->
     let validatePass = (rule, value, callback) => {
       if (value === "") {
@@ -59,11 +58,11 @@ export default {
     return {  
       ruleForm2: {
         username:"",
-        pass: "",
+        password: "",
         checkPass: ""
       },
       rules2: {
-        pass: [{ validator: validatePass, trigger: 'change' }],
+        password: [{ validator: validatePass, trigger: 'change' }],
         checkPass: [{ validator: validatePass2, trigger: 'change' }]
       }
     }
@@ -71,7 +70,7 @@ export default {
   methods: {
 
     submitForm(formName) {
-      this.$api.login.login({
+      this.$api.login.register({
                            username:  _this.ruleForm2.username,
                            password:  _this.ruleForm2.password
                             }).then(res => {
@@ -85,15 +84,6 @@ export default {
         path: "/login"
       });
     },
-
-    checkMobile(str) {
-      let re = /^1\d{10}$/
-      if (re.test(str)) {
-        return true;
-      } else {
-        return false;
-      }
-    }
   }
 };
 </script>
@@ -141,14 +131,14 @@ export default {
   text-align: center;
 }
 .login {
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 22px;
-  color: #1ab2ff;
-  cursor: pointer;
-  text-align: left;
-  text-indent: 8px;
-  width: 160px;
+     margin-top: 10px;
+    font-size: 16px;
+    line-height: 22px;
+    color: #1ab2ff;
+    cursor: pointer;
+    text-align: right;
+    text-indent: 8px;
+    width: 330px;
 }
 .login:hover {
   color: #2c2fd6;

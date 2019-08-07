@@ -1,6 +1,5 @@
 import base from './base' // 导入接口域名列表
 import instance from './http' // 导入http中创建的axios实例
-import qs from 'qs' // 根据需求是否导入qs模块
 
 const login = {
   // login
@@ -10,7 +9,7 @@ const login = {
 
   // register
   register (params) {
-    return instance.post(base.dev + '/user/sign', qs.stringify(params))
+    return instance.post(base.dev + '/user/sign', JSON.stringify(params))
   }
 
 }
