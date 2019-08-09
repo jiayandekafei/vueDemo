@@ -35,26 +35,26 @@ export default {
   name: "Register", 
   data() {
     // <!--验证密码-->
-    let validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("please input password"))
-      } else {
-        if (this.ruleForm2.checkPass !== "") {
-          this.$refs.ruleForm2.validateField("checkPass");
-        }
-        callback()
-      }
-    }
-    // <!--二次验证密码-->
-    let validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("please input confirm password"));
-      } else if (value !== this.ruleForm2.pass) {
-        callback(new Error("the password does not match"));
-      } else {
-        callback();
-      }
-    };
+    // let validatePass = (rule, value, callback) => {
+    //   if (value === "") {
+    //     callback(new Error("please input password"))
+    //   } else {
+    //     if (this.ruleForm2.checkPass !== "") {
+    //       this.$refs.ruleForm2.validateField("checkPass");
+    //     }
+    //     callback()
+    //   }
+    // }
+    // // <!--二次验证密码-->
+    // let validatePass2 = (rule, value, callback) => {
+    //   if (value === "") {
+    //     callback(new Error("please input confirm password"));
+    //   } else if (value !== this.ruleForm2.pass) {
+    //     callback(new Error("the password does not match"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {  
       ruleForm2: {
         username:"",
@@ -62,8 +62,8 @@ export default {
         checkPass: ""
       },
       rules2: {
-        password: [{ validator: validatePass, trigger: 'change' }],
-        checkPass: [{ validator: validatePass2, trigger: 'change' }]
+        // password: [{ validator: validatePass, trigger: 'change' }],
+        // checkPass: [{ validator: validatePass2, trigger: 'change' }]
       }
     }
   }, 
@@ -71,11 +71,11 @@ export default {
 
     submitForm(formName) {
       this.$api.login.register({
-                           username:  _this.ruleForm2.username,
-                           password:  _this.ruleForm2.password
+                           username:  this.ruleForm2.username,
+                           password:  this.ruleForm2.password
                             }).then(res => {
                             console.log(res.data);
-                            _this.$router.push('/login');
+                            this.$router.push('/login');
                             });
     },
 
