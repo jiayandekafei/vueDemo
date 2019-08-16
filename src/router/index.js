@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/login/Login'
 import Register from '@/components/login/Register'
 import User from '@/components/user/User'
+import Manage from '@/components/manage'
 import Test from '@/components/xss/Test'
 
 Vue.use(Router)
@@ -23,6 +24,11 @@ export default new Router({
       path: '/user',
       name: 'user',
       component: User
+    },
+    {
+      path: '/manage',
+      name: 'manage',
+      component: Manage
     },
     {
       path: '/test',
