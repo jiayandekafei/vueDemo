@@ -8,21 +8,17 @@ import xss from 'xss'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import VueI18n from 'vue-i18n'
+import './mockjs'
+
+// i18n国际化
+import i18n from '@/lang'
+// iconSvg
+import './components/iconSvg'
 
 Vue.prototype.$api = api
 Vue.prototype.$xss = xss
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-Vue.use(VueI18n)
-
-const i18n = new VueI18n({
-  locale: 'zh-CN', // 语言标识, 通过切换locale的值来实现语言切换,this.$i18n.locale
-  messages: {
-    'zh-CN': require('./lang/zh'), // 中文语言包
-    'en-US': require('./lang/en') // 英文语言包
-  }
-})
 
 /* eslint-disable no-new */
 new Vue({

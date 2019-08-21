@@ -25,6 +25,7 @@
 
 <script>
 	import logoImg from "@/assets/img/logo.png";
+	import { setToken } from '@/utils/auth'
 	export default {
 	    data(){
 			return {
@@ -62,8 +63,9 @@
 						username:  _this.loginForm.username,
 						password:  _this.loginForm.password
 						}).then(res => {
-						console.log(res.data);
-						this.$store.commit('set_token',res.data.data.token)
+						this.$store.commit('SET_TOKEN',res.data.data.token)
+						console.log(res)
+						setToken("Token",res.data.data.userDetail.role.role)
 						_this.$router.push('/');
 						this.$store.dispatch('initLeftMenu'); //设置左边菜单始终为展开状态
 						});

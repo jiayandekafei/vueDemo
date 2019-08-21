@@ -35,7 +35,7 @@ const zh = {
     errorPage: 'ErrorPage',
     page401: '401',
     page404: '404',
-    wechatNumber: 'wechat'
+    copyright: 'COPYRIGHT @ 2017 HOPERUN TECHNOLOGY CORP. ALL RIGHTS RESERVED'
   },
   index: {
     yearLoss: 'Year Loss',

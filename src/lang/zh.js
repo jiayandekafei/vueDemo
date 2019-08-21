@@ -35,7 +35,7 @@ const zh = {
     errorPage: '错误页面',
     page401: '401',
     page404: '404',
-    wechatNumber: '微信号'
+    copyright: ' 版权所有 (c)     润和软件股份有限公司'
   },
   index: {
     yearLoss: '年度总盈亏',

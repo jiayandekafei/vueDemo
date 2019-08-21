@@ -34,8 +34,7 @@
             HeadNav,
             LeftMenu,
             Bread,
-            FooterNav,
-            backTop
+            FooterNav
         },
         created() {
         },

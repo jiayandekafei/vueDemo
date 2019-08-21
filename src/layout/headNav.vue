@@ -20,13 +20,17 @@
                                 <img :src="americaImg" class='langAvatar' alt="">
                                 <span class="intro">EngList</span>
                             </el-menu-item>
+                             <el-menu-item index="1-3" @click="changeLocale('jp')">
+                                <img :src="japanImg" class='langAvatar' alt="">
+                                <span class="intro">日本語</span>
+                            </el-menu-item>
                         </el-submenu>
 
                         <el-submenu index="2">
                             <template slot="title">
                                 <div class='welcome'>
                                     <span class="name">{{$t('commons.hi')}},</span>
-                                    <span class='name avatarname'> {{ $t(`commons.${name}`)}}</span>
+                                    <span class='name avatarname'> {{ $t(`commons.${username}`)}}</span>
                                 </div>
                                 <img :src="avatar" class='avatar' alt="">
                             </template>
@@ -50,6 +54,8 @@
     import logoImg from "@/assets/img/logo.png";
     import chinaImg from "@/assets/img/china.svg";
     import americaImg from "@/assets/img/america.svg";
+    import japanImg from "@/assets/img/japan.svg";
+
 
 
     export default {
@@ -60,15 +66,7 @@
                 langLogo:getToken('langLogo') || chinaImg,
                 chinaImg:chinaImg,
                 americaImg:americaImg,
-                wechat:{
-                    wechatImg:wechatImg,
-                    isWechat:false
-                },
-                qq:{
-                    qqImg:qqImg,
-                    isQq:false,
-                },
-                github:github,
+                japanImg:japanImg,
                 menu:{
                     userBgcolor:'#f0f2f5'
                 }
@@ -118,6 +116,8 @@
                 this.$i18n.locale = type;
                 if(type === 'en'){
                     this.langLogo = this.americaImg;
+                }else if(type === 'jp'){
+                    this.langLogo = this.japanImg;
                 }else{
                     this.langLogo = this.chinaImg;
                 }

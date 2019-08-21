@@ -52,7 +52,7 @@ export default {
     methods: {
         handleSubmit(event){
              let _this = this;
-            this.$refs.ruleForm2.validate((valid) => {
+             this.$refs.ruleForm2.validate((valid) => {
                 if(valid){
                     this.logining = true;
                     this.$api.login.login({

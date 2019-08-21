@@ -1,25 +1,19 @@
 <template>
 	 <div class='footer'>
-        <p class="intro rflex">
-            <span>{{ $t('commons.xiaoai') }}Admin</span>
-            <a :href='github' target="_blank">
-               <icon-svg icon-class="iconGithub" />
-            </a>
-            <span>wdlhao2013({{ $t('commons.wechatNumber') }})</span>
-        </p>
-        <p class="beian">鄂ICP备18001612号</p>
+      
+        <p class="beian">{{$t('commons.copyright')}}</p>
     </div>
 </template>
 
 
 <script>
-    import { github } from "@/utils/env";
+   
 
 export default {
     name: "footerNav",
 	data(){
 		return {
-            github:github
+           
 		}
 	},
 	methods:{

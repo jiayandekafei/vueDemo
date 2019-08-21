@@ -1,8 +1,8 @@
 <template>
    <div class="menu_left cflex" :style="{width:sidebar.width+'px'}">
         <div class="menu_page_top rflex">
-            <img :class='["logo",{"closeLogo":!sidebar.opened}]' :src="logo" alt="小爱admin" >
-            <span class='title' v-show="sidebar.opened">{{$t('commons.xiaoai')}}<i>Admin</i></span>
+            <img :class='["logo",{"closeLogo":!sidebar.opened}]' :src="logo" alt="" >
+            <span class='title' v-show="sidebar.opened"></span>
         </div>
         <div class="menu_page_bottom el-scrollbar">
             <el-menu 
@@ -105,8 +105,8 @@ export default {
         box-sizing: border-box;
         box-shadow:0px 2px 5px 0px rgba(230,224,224,0.5);
         .logo {
-            height: 36px;
-            width: 36px;
+            height: 40px;
+            width: 62px;
             vertical-align: middle;
             display: inline-block;
         }

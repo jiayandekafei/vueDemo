@@ -8,7 +8,7 @@ Mock.setup({
 })
 
 // user相关
-Mock.mock(/\/user\/login/, 'get', userAPI.login)
+Mock.mock(/\/login\/login/, 'get', userAPI.login)
 Mock.mock(/\/user\/logout/, 'get', userAPI.logout)
 Mock.mock(/\/user\/info\/get/, 'get', userAPI.getUserInfo)
 Mock.mock(/\/user\/list\/get/, 'get', userAPI.getUserList)
