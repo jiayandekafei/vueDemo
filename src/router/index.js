@@ -66,6 +66,11 @@ export const constantRouterMap = [
     path: '/infoModify',
     name: 'infoModify',
     component: () => import('@/page/selfInfoManage/infoModify')
+  },
+  {
+    path: '/updatePassword',
+    name: 'updatePassword',
+    component: () => import('@/page/selfInfoManage/updatePassword')
   }
 ]
 

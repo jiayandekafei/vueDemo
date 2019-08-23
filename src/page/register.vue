@@ -53,6 +53,7 @@
 	import { setToken } from '@/utils/auth'
 	export default {
 	    data(){
+        //validate check password
         let validateSurepassword = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入确认密码'));
@@ -60,6 +61,19 @@
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                    callback();
+                }
+            };
+        //validate email 
+         let validateEmail = (rule, value, callback) => {
+                if(value == ''){
+                    callback(new Error('请输入邮箱'));
+                    return;
+                }
+                let emailRegex = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if (!emailRegex.test(value)) {
+                    callback(new Error('邮箱格式不正确！'))
+                } else {
+                    callback();
                 }
             };
 			return {
@@ -85,7 +99,7 @@
 						{ required: true, validator:validateSurepassword,trigger: 'blur' }
           ],
           	email: [
-						{ required: true, message: '请输入邮箱', trigger: 'blur' }
+						{ required: true,validator:validateEmail, trigger: 'blur' }
 					],
         },
         jobs: [{

@@ -58,37 +58,10 @@
                 }
             };
             return {
-               infoForm:{
-                   username:'',
-                   nickname:'',
-                   touziyear:'',
-                   email:'',
-                   telphone:''
-               },
                pwdForm:{
                    password:'',
                    newpassword:'',
                    surepassword:''
-               },
-               phoneForm:{
-                   phone:'',
-                   baseType:[],
-                   changeType:[]
-               },
-               infoRules: {
-                    nickname: [
-                        { required: true, message: '请输入昵称', trigger: 'blur' },
-                        { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
-                    ],
-                    touziyear: [
-                        { required: true, message: '请选择投资年限', trigger: 'change' }
-                    ],
-                    email: [
-                        {required: true,validator: validateEmail,trigger: 'blur'}
-                    ],
-                    telphone: [
-                        {required: true,validator: validatePhone, trigger: 'blur' },
-                    ],
                },
                pwdRules: {
                     password: [
@@ -101,21 +74,7 @@
                         { required: true, validator:validateSurepassword, trigger: 'blur' },
                     ],
                },
-               phoneRules:{
-                   phone: [
-                        {required: true,validator: validatePhone, trigger: 'blur' },
-                   ],
-                   baseType: [
-                        { type: 'array', required: true, message: '请至少选择一个基础短信服务', trigger: 'change' }
-                   ],
-                   changeType: [
-                        { type: 'array', required: true, message: '请至少选择一个可选短信服务', trigger: 'change' }
-                   ],
-               },
-             
             };
-           
-
         },
         created(){
            
@@ -137,25 +96,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        if(formName == 'pwdForm'){
-                            this.showMessage('success','修改密码成功~');
-                        }else if(formName == 'infoForm'){ // 判断手机服务是否为空
-                            this.phoneForm.phone = this.infoForm.telphone;
-                            for(let key in this.phoneForm){
-                                if(this.phoneForm[key] == ''){
-                                    this.showMessage('warning','请您选择手机服务~');
-                                    return;
-                                }
-                            }
-                        }else if(formName == 'phoneForm'){// 判断修改信息是否为空
-                            this.infoForm.telphone = this.phoneForm.phone;
-                            for(let key in this.infoForm){
-                                if(this.infoForm[key] == ''){
-                                    this.showMessage('warning','请您修改相关信息~');
-                                    return;
-                                }
-                            }
-                        }
+                      this.showMessage('success','修改密码成功~');
                         //保存修改的相关信息
 						let userinfo = this.infoForm;
                         let phoneinfo = this.phoneForm;

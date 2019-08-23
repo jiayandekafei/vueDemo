@@ -11,22 +11,8 @@
                     <el-form-item label="email" prop="email">
                         <el-input v-model="infoForm.email" size="mini" placeholder="请输入绑定邮箱"></el-input>
                     </el-form-item>
-                    <el-form-item label="group" prop="group">
-                        <el-select v-model="infoForm.touziyear" size="mini" placeholder="请选择投资年限" >
-                            <el-option label="1年" value="1"></el-option>
-                            <el-option label="2年" value="2"></el-option>
-                            <el-option label="3年" value="3"></el-option>
-                            <el-option label="4年" value="4"></el-option>
-                            <el-option label="5年" value="5"></el-option>
-                            <el-option label="6年" value="6"></el-option>
-                            <el-option label="7年" value="7"></el-option>
-                            <el-option label="8年" value="8"></el-option>
-                            <el-option label="9年" value="9"></el-option>
-                            <el-option label="10年" value="10"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="绑定手机" prop="telphone">
-                        <el-input v-model="infoForm.telphone" size="mini" placeholder="请输入绑定手机"></el-input>
+                    <el-form-item label="group" prop="props">
+                      <el-cascader :options="options" :props="props" collapse-tags clearable></el-cascader>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('infoForm')">提交</el-button>
@@ -44,6 +30,65 @@
 
     export default {
         data(){
+            return {
+               infoForm:{
+                   props: { multiple: true },
+                   username:'',
+                   email:'',
+                    options: [{
+          value: 1,
+          label: '东南',
+          children: [{
+            value: 2,
+            label: '上海',
+            children: [
+              { value: 3, label: '普陀' },
+              { value: 4, label: '黄埔' },
+              { value: 5, label: '徐汇' }
+            ]
+          }, {
+            value: 7,
+            label: '江苏',
+            children: [
+              { value: 8, label: '南京' },
+              { value: 9, label: '苏州' },
+              { value: 10, label: '无锡' }
+            ]
+          }, {
+            value: 12,
+            label: '浙江',
+            children: [
+              { value: 13, label: '杭州' },
+              { value: 14, label: '宁波' },
+              { value: 15, label: '嘉兴' }
+            ]
+          }]
+        }, {
+          value: 17,
+          label: '西北',
+          children: [{
+            value: 18,
+            label: '陕西',
+            children: [
+              { value: 19, label: '西安' },
+              { value: 20, label: '延安' }
+            ]
+          }, {
+            value: 21,
+            label: '新疆维吾尔族自治区',
+            children: [
+              { value: 22, label: '乌鲁木齐' },
+              { value: 23, label: '克拉玛依' }
+            ]
+          }]
+        }]
+               },
+               infoRules: {
+                    email: [
+                        {required: true,validator: validateEmail,trigger: 'blur'}
+                    ],
+               },
+            };
              // 附带callback(),是在明确通过验证的情况下去掉输入框上的loading
             let validateEmail = (rule, value, callback) => {
                 if(value == ''){
@@ -57,97 +102,6 @@
                     callback();
                 }
             };
-            let validatePhone = (rule, value, callback) => {
-                if(value == ''){
-                    callback(new Error('请输入手机号码~'));
-                }{
-                    let phoneRegex = /^1[34578]\d{9}$/;
-                    if (!phoneRegex.test(value)) {
-                        callback(new Error('手机号码格式不正确！'))
-                    } else {
-                        callback();
-                    }
-                }
-            };
-            // validateField:对部分表单字段进行校验的方法
-            let validateNewpassword = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入新密码'));
-                } else {
-                    if (this.pwdForm.surepassword !== '') {
-                        this.$refs.pwdForm.validateField('surepassword');
-                    }
-                    callback();
-                }
-            };
-            let validateSurepassword = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入确认密码'));
-                } else if (value !== this.pwdForm.newpassword) {
-                    callback(new Error('两次输入密码不一致!'));
-                } else {
-                   callback();
-                }
-            };
-            return {
-               infoForm:{
-                   username:'',
-                   nickname:'',
-                   touziyear:'',
-                   email:'',
-                   telphone:''
-               },
-               pwdForm:{
-                   password:'',
-                   newpassword:'',
-                   surepassword:''
-               },
-               phoneForm:{
-                   phone:'',
-                   baseType:[],
-                   changeType:[]
-               },
-               infoRules: {
-                    nickname: [
-                        { required: true, message: '请输入昵称', trigger: 'blur' },
-                        { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
-                    ],
-                    touziyear: [
-                        { required: true, message: '请选择投资年限', trigger: 'change' }
-                    ],
-                    email: [
-                        {required: true,validator: validateEmail,trigger: 'blur'}
-                    ],
-                    telphone: [
-                        {required: true,validator: validatePhone, trigger: 'blur' },
-                    ],
-               },
-               pwdRules: {
-                    password: [
-                        { required: true, message: '请输入原密码', trigger: 'blur' },
-                    ],
-                    newpassword: [
-                        { required: true, validator:validateNewpassword, trigger: 'blur' },
-                    ],
-                    surepassword: [
-                        { required: true, validator:validateSurepassword, trigger: 'blur' },
-                    ],
-               },
-               phoneRules:{
-                   phone: [
-                        {required: true,validator: validatePhone, trigger: 'blur' },
-                   ],
-                   baseType: [
-                        { type: 'array', required: true, message: '请至少选择一个基础短信服务', trigger: 'change' }
-                   ],
-                   changeType: [
-                        { type: 'array', required: true, message: '请至少选择一个可选短信服务', trigger: 'change' }
-                   ],
-               },
-             
-            };
-           
-
         },
         created(){
            
