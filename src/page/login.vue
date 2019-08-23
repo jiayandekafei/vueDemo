@@ -7,24 +7,27 @@
 				</div>
 		    	<el-form :model="loginForm" :rules="rules" ref="loginForm" class="loginForm">
 					<el-form-item prop="username" class="login-item">
-					    <span class="fa-tips"><i class="fa fa-user"></i></span>
+					    <span class="fa-tips"><i class="el-icon-user"></i></span>
 						<el-input @keyup.enter.native ="submitForm('loginForm')"  class="area" type="text" placeholder="username" v-model="loginForm.username" ></el-input>
 					</el-form-item>
 					<el-form-item prop="password" class="login-item">
-					    <span class="fa-tips"><i class="fa fa-lock"></i></span>
+					    <span class="fa-tips"><i class="el-icon-unlock"></i></span>
 						<el-input @keyup.enter.native ="submitForm('loginForm')" class="area" type="password" placeholder="password" v-model="loginForm.password"></el-input>
 					</el-form-item>
 					<el-form-item>
 				    	<el-button type="primary"  @click="submitForm('loginForm')" class="submit_btn">SIGN IN</el-button>
 				  	</el-form-item>
 				</el-form>
+			   <div class="register">
+				 <router-link to="/register"  >have no accouts?sign up</router-link>
+			   </div>
 	  		</section>
 	  	</transition>
   	</div>
 </template>
 
 <script>
-	import logoImg from "@/assets/img/logo.png";
+	import logoImg from "@/assets/img/company-logo.png";
 	import { setToken } from '@/utils/auth'
 	export default {
 	    data(){
@@ -101,9 +104,7 @@
 			font-size: 22px;
 			width: 100%;
 			padding-bottom: 20px;
-			.logo{
-				
-			}
+
 			.title{
 				i{
 				   color: #FF6C60;
@@ -164,10 +165,7 @@
 	  	opacity: 0;
 	}
 	.loginForm{
-		.el-button--primary{
-			background-color:#FF7C1A;
-			border:1px solid #FF7C1A;
-		}
+		
 	}
 	.sanFangArea{
 		border-top: 1px solid #DCDFE6;
@@ -191,4 +189,9 @@
 			}
 		}
 	}
+	.register {
+	 text-align: right;
+	 font-size: 14px;
+     color: #1ab2ff
+}
 </style>

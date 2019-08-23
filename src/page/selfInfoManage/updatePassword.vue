@@ -1,0 +1,230 @@
+<template>
+    <div class="fillcontain" ref="fillcontain">
+        <div class="info_container" ref="info_container">
+            <el-row class="info_row row" :gutter="10">
+            
+            <el-col :span="8">
+                <div class="area">
+                    <div class="pwdarea">
+                        <p class="title"><i class="fa fa-edit"></i>修改密码</p>
+                            <el-form class="form"  :model="pwdForm" :rules="pwdRules" ref="pwdForm" label-width="100px">
+                            <el-form-item label="原密码" prop="password">
+                                <el-input type="password" v-model="pwdForm.password" auto-complete="off" size="mini" placeholder="请输入原密码"></el-input>
+                            </el-form-item>
+                            <el-form-item label="新密码" prop="newpassword">
+                                <el-input type="password" v-model="pwdForm.newpassword" auto-complete="off" size="mini" placeholder="请输入新密码"></el-input>
+                            </el-form-item>
+                            <el-form-item label="确认新密码" prop="surepassword">
+                                <el-input type="password" v-model="pwdForm.surepassword" auto-complete="off" size="mini" placeholder="请输入确认新密码"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="submitForm('pwdForm')">提交</el-button>
+                                <el-button @click="resetForm('pwdForm')">重置</el-button>
+                            </el-form-item>
+                            </el-form>
+                    </div>
+                </div>
+            </el-col>
+
+            
+            </el-row>
+        </div>
+    </div>
+</template>
+
+<script>
+   import * as mutils from '@/utils/mUtils'
+
+    export default {
+        data(){
+            // validateField:对部分表单字段进行校验的方法
+            let validateNewpassword = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入新密码'));
+                } else {
+                    if (this.pwdForm.surepassword !== '') {
+                        this.$refs.pwdForm.validateField('surepassword');
+                    }
+                    callback();
+                }
+            };
+            let validateSurepassword = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入确认密码'));
+                } else if (value !== this.pwdForm.newpassword) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                   callback();
+                }
+            };
+            return {
+               infoForm:{
+                   username:'',
+                   nickname:'',
+                   touziyear:'',
+                   email:'',
+                   telphone:''
+               },
+               pwdForm:{
+                   password:'',
+                   newpassword:'',
+                   surepassword:''
+               },
+               phoneForm:{
+                   phone:'',
+                   baseType:[],
+                   changeType:[]
+               },
+               infoRules: {
+                    nickname: [
+                        { required: true, message: '请输入昵称', trigger: 'blur' },
+                        { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
+                    ],
+                    touziyear: [
+                        { required: true, message: '请选择投资年限', trigger: 'change' }
+                    ],
+                    email: [
+                        {required: true,validator: validateEmail,trigger: 'blur'}
+                    ],
+                    telphone: [
+                        {required: true,validator: validatePhone, trigger: 'blur' },
+                    ],
+               },
+               pwdRules: {
+                    password: [
+                        { required: true, message: '请输入原密码', trigger: 'blur' },
+                    ],
+                    newpassword: [
+                        { required: true, validator:validateNewpassword, trigger: 'blur' },
+                    ],
+                    surepassword: [
+                        { required: true, validator:validateSurepassword, trigger: 'blur' },
+                    ],
+               },
+               phoneRules:{
+                   phone: [
+                        {required: true,validator: validatePhone, trigger: 'blur' },
+                   ],
+                   baseType: [
+                        { type: 'array', required: true, message: '请至少选择一个基础短信服务', trigger: 'change' }
+                   ],
+                   changeType: [
+                        { type: 'array', required: true, message: '请至少选择一个可选短信服务', trigger: 'change' }
+                   ],
+               },
+             
+            };
+           
+
+        },
+        created(){
+           
+        },
+      	mounted() {
+            mutils.setContentHeight(this,this.$refs.fillcontain,170);
+	    },
+        methods: {
+            showMessage(type,message){
+                this.$message({
+                    type: type,
+                    message: message
+                });
+            },
+            showUsername(){
+                let userinfo = mutils.getStore('userinfo');
+                this.infoForm.username = userinfo.username;
+            },
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        if(formName == 'pwdForm'){
+                            this.showMessage('success','修改密码成功~');
+                        }else if(formName == 'infoForm'){ // 判断手机服务是否为空
+                            this.phoneForm.phone = this.infoForm.telphone;
+                            for(let key in this.phoneForm){
+                                if(this.phoneForm[key] == ''){
+                                    this.showMessage('warning','请您选择手机服务~');
+                                    return;
+                                }
+                            }
+                        }else if(formName == 'phoneForm'){// 判断修改信息是否为空
+                            this.infoForm.telphone = this.phoneForm.phone;
+                            for(let key in this.infoForm){
+                                if(this.infoForm[key] == ''){
+                                    this.showMessage('warning','请您修改相关信息~');
+                                    return;
+                                }
+                            }
+                        }
+                        //保存修改的相关信息
+						let userinfo = this.infoForm;
+                        let phoneinfo = this.phoneForm;
+						let userData = Object.assign(userinfo, phoneinfo);
+                        console.log(userData);
+                        // axios({
+                        //     type:'get',
+                        //     path:'/api/user/infoModify',
+                        //     data:userData,
+                        //     fn:data=>{
+						// 		console.log(data);
+						// 		if(data.status == 1){
+						// 			this.showMessage('success','修改密码成功~');
+                        //             this.$router.push('/infoList');
+						// 		}else{
+						// 			 this.$message.error('修改失败请重试')
+						// 		}
+						// 	},
+						// 	errFn:(res)=>{
+                        //         this.showMessage('error',res.message);
+                        //     }
+						// })
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+        }
+    }
+</script>
+
+<style lang="less" scoped>
+    .info_container{
+       padding: 20px;
+       background: #fff;
+       box-sizing: border-box;
+       overflow: auto;
+    }
+     .title{
+        text-align:center;
+        width:100%;
+        height:30px;
+        line-height:30px;
+        cursor: pointer;
+        background-color: #3bc5ff;
+        border:1px solid #3bc5ff;
+        color: white;
+        display: block;
+        .fa{
+          margin-right:5px;
+       }
+    }
+   .info_row{
+        .area{
+           border:1px solid #dfdfdf;
+           height:100%;
+           font-size:14px;
+           padding:10px;
+           .form{
+               width:90%;
+               margin-top:20px;
+           }
+        }
+   }
+</style>
+
+

@@ -50,7 +50,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import * as mUtils from "@/utils/mUtils";
-import logoImg from "@/assets/img/logo.png";
+import logoImg from "@/assets/img/company-logo.png";
 
 
 export default {
