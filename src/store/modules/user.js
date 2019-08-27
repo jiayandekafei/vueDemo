@@ -1,9 +1,10 @@
 import * as mUtils from '@/utils/mUtils'
-//import { logout, getUserInfo } from '@/api/user' // 导入用户信息相关接口
+// import { logout, getUserInfo } from '@/api/user' // 导入用户信息相关接口
 
 const user = {
   state: {
     name: '',
+    userid: '',
     avatar: '',
     token: '',
     roles: [],
@@ -33,6 +34,9 @@ const user = {
     },
     SET_NAME: (state, name) => {
       state.name = name
+    },
+    SET_USERID: (state, id) => {
+      state.userid = id
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar

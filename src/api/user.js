@@ -5,8 +5,12 @@ const user = {
   // user list
   userList () {
     return instance.get(base.dev + '/user/list')
-  }
+  },
 
+  // user detail
+  getUserInfo (userId) {
+    return instance.get(base.dev + '/user/' + userId)
+  }
 }
 
 export default user

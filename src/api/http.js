@@ -9,7 +9,7 @@ import { Message } from 'element-ui'
 const tip = msg => {
   Message({
     message: msg,
-    duration: 1000,
+    duration: 3000,
     showClose: true
   })
 }
@@ -36,6 +36,7 @@ const errorHandle = (status, other) => {
   switch (status) {
     // 401: 未登录状态，跳转登录页
     case 401:
+      tip('invalid user name or password')
       toLogin()
       break
       // 403 token过期

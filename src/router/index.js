@@ -36,11 +36,6 @@ export const constantRouterMap = [
     component: () => import('@/page/refresh')
   },
   {
-    path: '/refresh',
-    name: 'refresh',
-    component: () => import('@/page/refresh')
-  },
-  {
     path: '/index',
     name: 'index',
     component: Layout,

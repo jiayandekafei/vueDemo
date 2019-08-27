@@ -28,14 +28,13 @@
 
 <script>
 	import logoImg from "@/assets/img/company-logo.png";
-	import { setToken } from '@/utils/auth'
 	export default {
 	    data(){
 			return {
 				logo:logoImg,
 				loginForm: {
 					username: 'admin',
-					password: '123456'
+					password: '12356'
 				},
 				rules: {
 					username: [
@@ -66,9 +65,12 @@
 						username:  _this.loginForm.username,
 						password:  _this.loginForm.password
 						}).then(res => {
+					    // set authorization token to vuex
 						this.$store.commit('SET_TOKEN',res.data.data.token)
-						console.log(res)
-						setToken("Token",res.data.data.userDetail.role.role)
+					    // set userID to vuex
+						this.$store.commit("SET_USERID",res.data.data.userId)
+					    // set username to vuex
+						this.$store.commit("SET_NAME",res.data.data.username)
 						_this.$router.push('/');
 						this.$store.dispatch('initLeftMenu'); //设置左边菜单始终为展开状态
 						});
