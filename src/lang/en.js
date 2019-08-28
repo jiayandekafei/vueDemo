@@ -22,6 +22,7 @@ const zh = {
     infoModify1: 'InfoModify1',
     infoModify2: 'InfoModify2',
     infoModify3: 'InfoModify3',
+    modifyPassword: 'modifyPassword',
     fundManage: 'Money',
     fundList: 'MoneyList',
     chinaTabsList: 'AreaList',

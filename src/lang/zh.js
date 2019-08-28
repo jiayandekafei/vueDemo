@@ -22,6 +22,7 @@ const zh = {
     infoModify1: '修改信息子菜单1',
     infoModify2: '修改信息子菜单2',
     infoModify3: '修改信息子菜单3',
+    modifyPassword: '修改密码',
     fundManage: '资金管理',
     fundList: '资金流水',
     chinaTabsList: '区域投资',

@@ -15,6 +15,7 @@ const user = {
     roles: state => state.roles,
     avatar: state => state.avatar,
     name: state => state.name,
+    userid: state => state.userid,
     browserHeaderTitle: state => state.browserHeaderTitle
   },
   mutations: {

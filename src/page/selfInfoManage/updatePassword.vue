@@ -101,7 +101,6 @@
 						let userinfo = this.infoForm;
                         let phoneinfo = this.phoneForm;
 						let userData = Object.assign(userinfo, phoneinfo);
-                        console.log(userData);
                         // axios({
                         //     type:'get',
                         //     path:'/api/user/infoModify',

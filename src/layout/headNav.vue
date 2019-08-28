@@ -34,7 +34,7 @@
                                 </div>
                                 <img :src="avatar" class='avatar' alt="">
                             </template>
-                            <el-menu-item index="2-1" @click="setDialogInfo('info')">个人信息</el-menu-item>
+                            <el-menu-item index="2-1" @click="setDialogInfo('info')">修改个人信息</el-menu-item>
                             <el-menu-item index="2-2" @click="setDialogInfo('pass')">修改密码</el-menu-item>
                             <el-menu-item index="2-3" @click="setDialogInfo('logout')">退出</el-menu-item>
                         </el-submenu>
@@ -100,10 +100,10 @@
             setDialogInfo(cmditem) {
                 switch (cmditem) {
                     case 'info':
-                        this.$router.push('/infoManage/infoShow/infoShow1');
+                        this.$router.push('/infoManage/infoModify/infoModify1');
                         break;
                     case 'pass':
-                        this.$router.push('/infoManage/infoModify/infoModify1');
+                        this.$router.push('/infoManage/modifyPassword/modifyPassword1');
                         break;
                     case 'logout':
                         this.logout();

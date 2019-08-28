@@ -139,7 +139,6 @@ export default {
           let userinfo = this.infoForm;
       
           let userData = Object.assign(userinfo, phoneinfo);
-          console.log(userData);
           // axios({
           //     type:'get',
           //     path:'/api/user/infoModify',

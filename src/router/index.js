@@ -55,43 +55,11 @@ export const constantRouterMap = [
         component: () => import('@/page/index/index')
       }
     ]
-  },
-  //need delete
-  {
-    path: '/infoModify',
-    name: 'infoModify',
-    component: () => import('@/page/selfInfoManage/infoModify')
-  },
-  {
-    path: '/updatePassword',
-    name: 'updatePassword',
-    component: () => import('@/page/selfInfoManage/updatePassword')
   }
 ]
 
 // 异步路由（需要权限的页面）
 export const asyncRouterMap = [
-  {
-    path: '/userManager',
-    name: 'userManage',
-    component: Layout,
-    meta: {
-      title: '用户管理',
-      icon: 'fa-user'
-    },
-    noDropdown: true,
-    children: [
-      {
-        path: 'userList',
-        meta: {
-          title: '用户管理',
-          icon: 'fa-user',
-          routerType: 'leftmenu'
-        },
-        component: () => import('@/page/index/index')
-      }
-    ]
-  },
   {
     path: '/infoManage',
     name: 'infoManage',
@@ -109,13 +77,25 @@ export const asyncRouterMap = [
           icon: 'fa-asterisk',
           routerType: 'leftmenu',
           titleList: [
-            { 'path': 'infoModify1', 'title': '修改信息子菜单1' },
-            { 'path': 'infoModify2', 'title': '修改信息子菜单2' },
-            { 'path': 'infoModify3', 'title': '修改信息子菜单3' }
+            { 'path': 'infoModify1', 'title': '修改信息子菜单1' }
           ]
         },
         component: Content,
         children: filterTopRouterMap('infoModify')
+      },
+      {
+        path: 'modifyPassword',
+        name: 'modifyPassword',
+        meta: {
+          title: '修改密码',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu',
+          titleList: [
+            { 'path': 'modifyPassword1', 'title': '修改密码' }
+          ]
+        },
+        component: Content,
+        children: filterTopRouterMap('modifyPassword')
       }
     ]
   }

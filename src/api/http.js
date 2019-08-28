@@ -2,6 +2,7 @@ import axios from 'axios'
 import router from '../router'
 import store from '../store/index'
 import { Message } from 'element-ui'
+import { getToken,removeToken } from '@/utils/auth'
 /**
   * 提示函数
   * 禁止点击蒙层、显示一秒后关闭
@@ -43,18 +44,15 @@ const errorHandle = (status, other) => {
       // 清除token并跳转登录页
     case 403:
       tip('登录过期，请重新登录')
-      localStorage.removeItem('token')
-      store.commit('loginSuccess', null)
-      setTimeout(() => {
-        toLogin()
-      }, 1000)
+      //toLogin()
+      removeToken("Token")
       break
       // 404请求不存在
     case 404:
       tip('请求的资源不存在')
       break
     default:
-      console.log(other)
+      break
   }
 }
 
@@ -72,8 +70,7 @@ instance.interceptors.request.use(
     // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
     // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
     // 而后我们可以在响应拦截器中，根据状态码进行一些统一的操作。
-    const token = store.state.token
-    console.log(token)
+    const token = getToken("Token")
     token && (config.headers.Authorization = 'Bearer ' + token)
     return config
   },

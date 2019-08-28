@@ -15,7 +15,7 @@ import i18n from '@/lang'
 // iconSvg
 import './components/iconSvg'
 // permission control
-//import '@/permission'
+import '@/permission'
 
 Vue.prototype.$api = api
 Vue.prototype.$xss = xss

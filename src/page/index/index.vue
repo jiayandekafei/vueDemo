@@ -1,5 +1,5 @@
 <template>
-		<section class="data_section" ref="data_section"  v-loading.fullscreen.lock="loading"> 
+		<section class="data_section" ref="data_section"> 
 			
 				<el-row :gutter="10" class="row_list">
 					<el-col :span="8">

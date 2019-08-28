@@ -1,5 +1,6 @@
 import router from './router'
 import store from './store'
+import api from './api'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
 import { Message } from 'element-ui'
@@ -30,21 +31,26 @@ router.beforeEach((to, from, next) => {
     } else {
       // 用户登录成功之后，每次点击路由都进行了角色的判断;
       if (store.getters.roles.length === 0) {
-        let token = getToken('Token')
-        this.$api.user.getUserInfo({'token': token}).then().then(res => { // 根据token拉取用户信息
-          let userList = res.data.userList
-          store.commit('SET_ROLES', userList.roles)
-          store.commit('SET_NAME', userList.name)
-          store.commit('SET_AVATAR', userList.avatar)
-          store.dispatch('GenerateRoutes', { 'roles': userList.roles }).then(() => { // 根据roles权限生成可访问的路由表
+        api.user.getUserInfo(getToken('userid')).then().then(res => { // 根据token拉取用户信息
+          let userinfo = res.data.data
+          let roles = []
+          if (userinfo.superuser === 'Y') {
+            roles.push('admin')
+          } else {
+            userinfo.groups.forEach(item => {
+              roles.push(item.roleId)
+            })
+          }
+          console.log('roles :' + roles)
+          store.commit('SET_ROLES', roles)
+          store.commit('SET_NAME', userinfo.username)
+          store.commit('SET_AVATAR', userinfo.username)
+          store.dispatch('GenerateRoutes', { 'roles': roles }).then(() => { // 根据roles权限生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问权限路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
         }).catch((err) => {
-          store.dispatch('LogOut').then(() => {
-            Message.error(err || 'Verification failed, please login again')
-            next({ path: '/' })
-          })
+            next()
         })
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
