@@ -1,131 +1,290 @@
 <template>
     <div class="fillcontain">
-        <div class="contain">
-          <div class="table_container">
+        <search-item @showDialog="showAddUserDialog" @searchList="getUserList" @onBatchDelUser="onBatchDelUser"></search-item>
+        <div class="table_container">
             <el-table
-                 v-loading="loading"
-                 :data="tableData"
-                 border
-                 stripe
-                 highlight-current-row
-                 header-cell-class-name="table-header-class"
-                 style="width:100%">
-                <el-table-column
-                   label="序号"
-                   width="60"
-                   align='center'>
-                   <template slot-scope="scope">
-                       <span>{{scope.$index+(paginations.pageIndex - 1) * paginations.pageSize + 1}} </span>
-                    </template>
-                </el-table-column>
-                 <el-table-column
-                   property="username"
-                   label="用户姓名"
-                   width="80"
-                   align='center'>
-                </el-table-column>
-                <el-table-column
-                   property="email"
-                   label="邮箱地址"
-                   width="180"
-                   align='center'>
-                </el-table-column>
-                <el-table-column
-                   property="job_title"
-                   label="职位"
-                   align='center'>
-                </el-table-column>
-                 <el-table-column
-                   property="status"
-                   label="状态"
-                   width="80"
-                   align='center'>
-                </el-table-column> 
-                  
+                v-loading="loading"
+                :data="tableData"
+                style="width: 100%"
+                align='center'
+                @select="selectTable"
+                @select-all="selectAll"
+                >
+              <el-table-column
+                v-if="idFlag"
+                prop="id"
+                label="id"
+                align='center'
+                width="180">
+            </el-table-column>
+            <el-table-column
+                type="selection"
+                align='center'
+                width="40">
+            </el-table-column>
+              <el-table-column
+                prop="username"
+                label="用户姓名"
+                align='center'
+                width="80">
+            </el-table-column>
+            <el-table-column
+                prop="email"
+                label="邮箱"
+                align='center'
+                >
+            </el-table-column>
+            <el-table-column
+                prop="job"
+                label="职位"
+                align='center'
+                width="130"
+                :formatter="formatterType"
+                :filters="fields.job.filter.list"
+                :filter-method="filterType">
+            </el-table-column>
+            <el-table-column
+                prop="operation"
+                align='center'
+                label="操作"
+                width="180">
+                <template slot-scope='scope'>
+                    <el-button 
+                        type="warning" 
+                        icon='edit' 
+                        size="mini"
+                        @click='onEditMoney(scope.row)'
+                    >编辑</el-button>
+                    <el-button 
+                        type="danger" 
+                        icon='delete' 
+                        size="mini"
+                        @click='onDeleteMoney(scope.row,scope.$index)'
+                    >删除</el-button>
+                </template>
+            </el-table-column>
             </el-table>
-           <el-row>
-                <el-col :span="24">
-                    <div class="pagination">
-                        <el-pagination
-                            v-if='paginations.total > 0'
-                            :page-sizes="paginations.pageSizes"
-                            :page-size="paginations.pageSize"
-                            :layout="paginations.layout"
-                            :total="paginations.total"
-                            :current-page='paginations.pageIndex'
-                            @current-change='handleCurrentChange'
-                            @size-change='handleSizeChange'>
-                        </el-pagination>
-                    </div>
-                </el-col>
-            </el-row>
-          </div>
+            <pagination :pageTotal="pageTotal" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange"></pagination>
+            <addUserDialog  v-if="addUserDialog.show" :isShow="addUserDialog.show" :dialogRow="addUserDialog.dialogRow"  @getFundList="getUserList"  @closeDialog="hideaddUserDialog"></addUserDialog>
         </div>
     </div>
 </template>
 
 <script>
-    import { getUserList } from "@/api/user";
+    import { mapGetters } from "vuex";
+    import * as mutils from '@/utils/mUtils'
+    import SearchItem from "./components/searchItem";
+    import addUserDialog from "./components/addUserDialog";
+    import Pagination from "@/components/pagination";
+
     export default {
         data(){
             return {
                 tableData: [],
+                tableHeight:0,
                 loading:true,
-              //需要给分页组件传的信息
-                paginations: {
-                    total: 0,        // 总数
-                    pageIndex: 1,  // 当前位于哪页
-                    pageSize: 20,   // 1页显示多少条
-                    pageSizes: [5, 10, 15, 20],  //每页显示多少条
-                    layout: "total, sizes, prev, pager, next, jumper"   // 翻页属性
+                idFlag:false,
+                isShow:false, // 
+                editid:'',
+                rowIds:[],
+                sortnum:0,
+                job_list: {
+                    0: '提现',
+                    1: '提现手续费',
+                    2: '提现锁定',
+                    3: '理财服务退出',
+                    4: '购买宜定盈',
+                    5: '充值',
+                    6: '优惠券',
+                    7: '充值礼券',
+                    8: '转账'
                 },
+                addUserDialog:{  
+                    show:false,
+                    dialogRow:{}
+                },
+                incomePayData:{
+                    page:1,
+                    limit:20,
+                    name:''
+                },
+                pageTotal:0,
+                // 用于列表筛选
+                fields: {
+                    job:{
+                        filter: {
+                            list: [{
+                                text: '提现',
+                                value: 0
+                            },{
+                                text: '提现手续费',
+                                value: 1
+                            }, {
+                                text: '提现锁定',
+                                value: 2
+                            }, {
+                                text: '理财服务退出',
+                                value: 3
+                            }, {
+                                text: '购买宜定盈',
+                                value: 4
+                            }, {
+                                text: '充值',
+                                value: 5
+                            }, {
+                                text: '优惠券',
+                                value: 6
+                            }, {
+                                text: '充值礼券',
+                                value: 7
+                            }, {
+                                text: '转账',
+                                value: 8
+                            }],
+                            multiple: true
+                        }
+                    },
+                },
+               
             }
         },
-        created(){
+        components:{
+            SearchItem,
+            addUserDialog,
+            Pagination
         },
-        mounted(){
+        computed:{
+            ...mapGetters(['search'])
+        },
+      	mounted() {
             this.getUserList();
-        },
+        
+	   },
         methods: {
+             setTableHeight(){
+                this.$nextTick(() => {
+                   this.tableHeight =  document.body.clientHeight - 300
+                })
+             },
+            // 获取用户列表数据
             getUserList(){
-                let para = {
-                    limit:this.paginations.pageSize,
-                    page:this.paginations.pageIndex
-                }
-                getUserList(para).then(res => {
-                    this.loading = false;
-                    this.paginations.total = res.data.total;
-                    this.tableData = res.data.userList;
+                const para = {
+                    userId:'1',
+                    superuser:'Y',
+                };
+                this.$api.user.getUserList(para).then(res => {
+                     this.loading = false;
+                     this.pageTotal = res.data.total
+                     this.tableData = res.data.users
                 })
             },
-            // 每页多少条切换
-            handleSizeChange(pageSize) {
-               this.paginations.pageSize = pageSize;
-               this.getUserList();
+            // 显示资金弹框
+            showAddUserDialog(val){
+                this.$store.commit('SET_DIALOG_TITLE', val)
+                this.addUserDialog.show = true;
+            },
+            hideaddUserDialog(){
+                this.addUserDialog.show = false;
             },
             // 上下分页
-            handleCurrentChange(page) {
-               this.paginations.pageIndex = page;
-               this.getUserList();
+            handleCurrentChange(val){
+                this.incomePayData.page = val;
+                this.getUserList()
+            },
+            // 每页显示多少条
+            handleSizeChange(val){
+                this.incomePayData.limit = val;
+                this.getUserList()
+            },
+
+            /**
+            * 格式化状态
+            */
+            formatterType(item) {
+                //const type = parseInt(item.job);
+                return this.job_list[item.job];
+            },
+            filterType(value, item) {
+               // const type = parseInt(item.incomePayType);
+                return this.job_list[value] == this.job_list[item.incomePayType];
+            },
+            // 编辑操作方法
+            onEditMoney(row){
+                this.addUserDialog.dialogRow = row;
+                this.showAddUserDialog();
+            },
+            // 删除数据
+            onDeleteMoney(row){
+                this.$confirm('确认删除该记录吗?', '提示', {
+                    type: 'warning'
+                })
+                .then(() => {
+                    const para = { id: row.id }
+                    removeMoney(para).then(res => {
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        })
+                        this.getUserList()
+                    })
+                })
+                .catch(() => {})
+            },
+            onBatchDelUser(){
+                this.$confirm('确认批量删除记录吗?', '提示', {
+                    type: 'warning'
+                })
+                .then(() => {
+                    const ids = this.rowIds.map(item => item.id).toString()
+                    const para = { ids: ids }
+                    batchremoveMoney(para).then(res => {
+                        this.$message({
+                            message: '批量删除成功',
+                            type: 'success'
+                        })
+                        this.getUserList()
+                    })
+                })
+                .catch(() => {})
+            },
+            // 当用户手动勾选数据行的 Checkbox 时触发的事件
+            selectTable(val, row){
+                this.setSearchBtn(val);
+            },
+            // 用户全选checkbox时触发该事件
+            selectAll(val){
+                 val.forEach((item) => {
+                     this.rowIds.push(item.id);
+                });
+                this.setSearchBtn(val);
+            },
+            setSearchBtn(val){
+                let isFlag = true;
+                if(val.length > 0){
+                    isFlag = false;
+                }else{
+                    isFlag = true;
+                }
+                this.$store.commit('SET_SEARCHBTN_DISABLED',isFlag);
             }
         },
     }
 </script>
 
 <style lang="less" scoped>
-    .fillcontain{
-        padding-bottom: 0;
-    }
-    .contain{
-        background: #fff;
+    .table_container{
         padding: 10px;
-        margin-bottom: 20px;
+        background: #fff;
+        border-radius: 2px;
     }
-   .pagination{
-       padding: 10px 20px;
-       text-align: right;
-   }
+    .el-dialog--small{
+       width: 600px !important;
+    }
+    .pagination{
+        text-align: left;
+        margin-top: 10px;
+    }
+     
 </style>
-
 
 

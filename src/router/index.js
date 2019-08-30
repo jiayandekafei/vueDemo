@@ -55,11 +55,53 @@ export const constantRouterMap = [
         component: () => import('@/page/index/index')
       }
     ]
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import('@/page/test')
+  },
+  {
+    path: '/test1',
+    name: 'test1',
+    component: () => import('@/page/test1')
   }
 ]
 
 // 异步路由（需要权限的页面）
 export const asyncRouterMap = [
+  {
+    path: '/userManage',
+    name: 'userManage',
+    meta: {
+      title: '用户管理',
+      icon: 'fa-user'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'userList',
+        name: 'userList',
+        meta: {
+          title: '用户一览',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu'
+        },
+        component: () => import('@/page/user/userList')
+      },
+      {
+        path: 'userApprove',
+        name: 'userApprove',
+        meta: {
+          title: '用户审批',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu',
+          roles: ['admin', 'PM']
+        },
+        component: () => import('@/page/user/userApprove')
+      }
+    ]
+  },
   {
     path: '/infoManage',
     name: 'infoManage',

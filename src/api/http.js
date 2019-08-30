@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from '../router'
 import store from '../store/index'
 import { Message } from 'element-ui'
-import { getToken,removeToken } from '@/utils/auth'
+import { getToken, removeToken } from '@/utils/auth'
 /**
   * 提示函数
   * 禁止点击蒙层、显示一秒后关闭

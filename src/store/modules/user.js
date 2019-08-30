@@ -8,7 +8,15 @@ const user = {
     avatar: '',
     token: '',
     roles: [],
-    browserHeaderTitle: mUtils.getStore('browserHeaderTitle') || 'pagoda'
+    browserHeaderTitle: mUtils.getStore('browserHeaderTitle') || 'pagoda',
+    addUserDialog: {
+      title: '新增用户',
+      type: 'add'
+    },
+    search: {
+      name: ''
+    },
+    searchBtnDisabled: true
   },
   getters: {
     token: state => state.token,
@@ -16,7 +24,10 @@ const user = {
     avatar: state => state.avatar,
     name: state => state.name,
     userid: state => state.userid,
-    browserHeaderTitle: state => state.browserHeaderTitle
+    browserHeaderTitle: state => state.browserHeaderTitle,
+    addUserDialog: state => state.addUserDialog,
+    search: state => state.search,
+    searchBtnDisabled: state => state.searchBtnDisabled
   },
   mutations: {
     SET_TOKEN (state, token) {
@@ -41,6 +52,21 @@ const user = {
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
+    },
+    SET_DIALOG_TITLE: (state, type) => {
+      if (type === 'add') {
+        state.addFundDialog.title = '新增用户'
+        state.addFundDialog.type = 'add'
+      } else {
+        state.addFundDialog.title = '编辑用户信息'
+        state.addFundDialog.type = 'edit'
+      }
+    },
+    SET_SEARCH: (state, payload) => {
+      state.search = payload
+    },
+    SET_SEARCHBTN_DISABLED: (state, payload) => {
+      state.searchBtnDisabled = payload
     }
   },
   actions: {
