@@ -8,7 +8,7 @@
 		    	<el-form :model="registerForm" :rules="rules" ref="registerForm" class="registerForm">
 				  <el-form-item prop="username">
              <span class="fa-tips"><i class="el-icon-user"></i></span>
-            <el-input v-model="registerForm.username" auto-complete="off" placeholder="please input username"></el-input>
+            <el-input v-model="registerForm.username" auto-complete="off" placeholder="please input username" ></el-input>
           </el-form-item>
 					<el-form-item prop="password">
              <span class="fa-tips"><i class="el-icon-unlock"></i></span>
@@ -29,17 +29,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-           <el-form-item>
-             <span class="fa-tips"><i class="el-icon-user-solid"></i></span>
-           <el-select style="width:100%" v-model="registerForm.group" auto-complete="off" placeholder="please input job title">
-            <el-option v-for="item in groups" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-           </el-form-item>
-					<el-form-item>
-				    	<el-button type="primary"  @click="submitForm('registerForm')" class="submit_btn">SIGN IN</el-button>
-				  	</el-form-item>
-				</el-form>
+		  <el-form-item>
+			<el-button type="primary"  @click="submitForm('registerForm')" class="submit_btn">SIGN IN</el-button>
+		  </el-form-item>
+		</el-form>
 			   <div class="login">
 				 <router-link to="/login"  >already have accouts?sign in</router-link>
 			   </div>
@@ -57,7 +50,7 @@
         let validateSurepassword = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入确认密码'));
-                } else if (value !== this.registerForm.newpassword) {
+                } else if (value !== this.registerForm.checkPass) {
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                    callback();
@@ -75,55 +68,69 @@
                 } else {
                     callback();
                 }
+			};
+			//validate email 
+         let validateUsername = (rule, value, callback) => {
+                if(value == ''){
+                    callback(new Error('请输入用户名'));
+                    return;
+                }
+               this.$api.user.checkUser( this.registerForm.username).then(res=>{
+                    if(res.data.data===true){
+						callback(new Error('用户已存在！'))
+                        
+					}else{
+						callback();
+					}
+				});
+               
             };
 			return {
 				logo:logoImg,
 				registerForm: {
-          username: '',
-          password: '',
-          checkPass: '',
+				username: '',
+				password: '',
+				checkPass: '',
 					email: '',
-          job: '',
-          group: '',
-
+          			job: '',
 				},
 				rules: {
 					username: [
-			            { required: true, message: '请输入用户名', trigger: 'blur' },
-						{ min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
+			            { required: true, validator:validateUsername, trigger: 'blur' },
+						//{ min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
 			        ],
 					password: [
 						{ required: true, message: '请输入密码', trigger: 'blur' }
-          ],
-          	checkPass: [
+					],
+					checkPass: [
 						{ required: true, validator:validateSurepassword,trigger: 'blur' }
-          ],
-          	email: [
+					],
+					email: [
 						{ required: true,validator:validateEmail, trigger: 'blur' }
 					],
-        },
-        jobs: [{
-          value: 'PG',
-          label: 'PG'
-        }, {
-          value: 'SE',
-          label: 'SE'
-        }, {
-          value: 'SSE',
-          label: 'SSE'
-        }, {
-          value: 'PM',
-          label: 'PM'
-        }],
-        groups: [{
-          value: '01',
-          label: 'group'
-        }, {
-          value: '02',
-          label: 'group2'
-        }],
-			}
-		},
+					},
+				jobs: [{
+				value: 'PG',
+				label: 'PG'
+				}, {
+				value: 'SE',
+				label: 'SE'
+				}, {
+				value: 'SSE',
+				label: 'SSE'
+				}, {
+				value: 'PM',
+				label: 'PM'
+				}],
+				groups: [{
+				value: '01',
+				label: 'group'
+				}, {
+				value: '02',
+				label: 'group2'
+				}],
+		}
+	 },
 		mounted(){
 		},
 		methods: {
@@ -134,19 +141,24 @@
                 });
             },
 		    submitForm(registerForm) {
-				let _this = this;
+				let _this=this
 				this.$refs[registerForm].validate((valid) => {
 					if (valid) {
 						this.logining = true;
-						this.$api.login.login({
+						this.$api.login.register({
 						username:  _this.registerForm.username,
-						password:  _this.registerForm.password
+						password:  _this.registerForm.password,
+						email:  _this.registerForm.eamil,
+						job:  _this.registerForm.job
 						}).then(res => {
-						this.$store.commit('SET_TOKEN',res.data.data.token)
+						
 						console.log(res)
-						setToken("Token",res.data.data.userDetail.role.role)
-						_this.$router.push('/');
-						this.$store.dispatch('initLeftMenu'); //设置左边菜单始终为展开状态
+								this.$message({
+									showClose: true,
+									duration: 3000,
+									message: '注册成功，3秒后将跳到登录页面'
+									});
+						//_this.$router.push('/login');
 						});
 					}
 				});

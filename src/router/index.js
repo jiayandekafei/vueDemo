@@ -65,6 +65,11 @@ export const constantRouterMap = [
     path: '/test1',
     name: 'test1',
     component: () => import('@/page/test1')
+  },
+  {
+    path: '/test2',
+    name: 'test2',
+    component: () => import('@/page/test2')
   }
 ]
 
@@ -75,7 +80,8 @@ export const asyncRouterMap = [
     name: 'userManage',
     meta: {
       title: '用户管理',
-      icon: 'fa-user'
+      icon: 'fa-user',
+      roles: ['admin', 'PM', 'user']
     },
     component: Layout,
     children: [
@@ -85,20 +91,10 @@ export const asyncRouterMap = [
         meta: {
           title: '用户一览',
           icon: 'fa-asterisk',
-          routerType: 'leftmenu'
+          routerType: 'leftmenu',
+          roles: ['admin', 'PM', 'user']
         },
         component: () => import('@/page/user/userList')
-      },
-      {
-        path: 'userApprove',
-        name: 'userApprove',
-        meta: {
-          title: '用户审批',
-          icon: 'fa-asterisk',
-          routerType: 'leftmenu',
-          roles: ['admin', 'PM']
-        },
-        component: () => import('@/page/user/userApprove')
       }
     ]
   },

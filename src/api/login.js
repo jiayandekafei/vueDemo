@@ -9,7 +9,12 @@ const login = {
 
   // register
   register (params) {
-    return instance.post(base.dev + '/user/sign', JSON.stringify(params))
+    console.log(JSON.stringify(params))
+    return instance.post(base.dev + '/register', JSON.stringify(params))
+  },
+  // logout
+  logout () {
+    return instance.get(base.dev + '/signout')
   }
 
 }

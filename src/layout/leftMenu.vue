@@ -105,8 +105,8 @@ export default {
         box-sizing: border-box;
         box-shadow:0px 2px 5px 0px rgba(230,224,224,0.5);
         .logo {
-            height: 40px;
-            width: 62px;
+            height: 54px;
+            width: 130px;
             vertical-align: middle;
             display: inline-block;
         }

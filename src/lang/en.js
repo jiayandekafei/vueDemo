@@ -19,6 +19,7 @@ const zh = {
     infoModify1: 'InfoModify1',
     modifyPassword: 'modifyPassword',
     modifyPassword1: 'modifyPassword1',
+    groupRole: 'groupAndRole',
     errorPage: 'ErrorPage',
     page401: '401',
     page404: '404',

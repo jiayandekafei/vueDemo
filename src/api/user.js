@@ -11,7 +11,22 @@ const user = {
   // user detail
   getUserInfo (userId) {
     return instance.get(base.dev + '/user/' + userId)
+  },
+  // update  user
+  updateUserInfo (reqBody) {
+    return instance.put(base.dev + '/user', JSON.stringify(reqBody))
+  },
+
+  // user detail
+  checkUser (username) {
+    return instance.get(base.dev + '/user/checkUser/' + username)
+  },
+
+  // get group tree
+  getGroupTree (userId) {
+    return instance.get(base.dev + '/user/grouptree/' + userId)
   }
+
 }
 
 export default user

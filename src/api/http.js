@@ -20,11 +20,10 @@ const tip = msg => {
   * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
   */
 const toLogin = () => {
-  router.replace({
-    path: '/login',
-    query: {
-      redirect: router.currentRoute.fullPath
-    }
+  return new Promise((resolve, reject) => {
+    store.commit('SET_ROLES', [])
+    removeToken('Token')
+    resolve()
   })
 }
 
@@ -38,18 +37,18 @@ const errorHandle = (status, other) => {
     // 401: 未登录状态，跳转登录页
     case 401:
       tip('invalid user name or password')
-      toLogin()
+      // toLogin()
       break
       // 403 token过期
       // 清除token并跳转登录页
     case 403:
       tip('登录过期，请重新登录')
-      //toLogin()
-      removeToken("Token")
+      toLogin()
+      removeToken('Token')
       break
       // 404请求不存在
     case 404:
-      tip('请求的资源不存在')
+      // tip('请求的资源不存在')
       break
     default:
       break
@@ -70,7 +69,7 @@ instance.interceptors.request.use(
     // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
     // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
     // 而后我们可以在响应拦截器中，根据状态码进行一些统一的操作。
-    const token = getToken("Token")
+    const token = getToken('Token')
     token && (config.headers.Authorization = 'Bearer ' + token)
     return config
   },

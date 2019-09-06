@@ -19,7 +19,7 @@ export const getStore = name => {
     try {
       value = JSON.parse(value)
     } catch (e) {
-      //value = value
+      // value = value
     }
   }
   return value
@@ -33,23 +33,6 @@ export const removeStore = name => {
   window.localStorage.removeItem(name)
 }
 
-/**
- * 让整数自动保留2位小数
- */
-// export const returnFloat = value => {
-//     var value=Math.round(parseFloat(value)*100)/100;
-//     var xsd=value.toString().split(".");
-//     if(xsd.length==1){
-//         value=value.toString()+".00";
-//         return value;
-//     }
-//     if(xsd.length>1){
-//         if(xsd[1].length<2){
-//             value=value.toString()+"0";
-//         }
-//         return value;
-//     }
-// }
 /**
  * @param {date} 标准时间格式:Fri Nov 17 2017 09:26:23 GMT+0800 (中国标准时间)
  * @param {type} 类型
@@ -65,11 +48,11 @@ export const formatDate = (date, type) => {
   var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()// 分
   var seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()// 秒
   var milliseconds = date.getMilliseconds() < 10 ? '0' + date.getMilliseconds() : date.getMilliseconds() // 毫秒
-  if (type == 1) {
+  if (type === 1) {
     return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds + '.' + milliseconds
-  } else if (type == 2) {
+  } else if (type === 2) {
     return year + '' + month + '' + day + '' + hour + '' + minutes + '' + seconds
-  } else if (type == 3) {
+  } else if (type === 3) {
     return year + '-' + month + '-' + day
   } else {
     return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds
@@ -95,7 +78,7 @@ export const parseToDate = (timeValue) => {
 export const isEmpty = (keys) => {
   if (typeof keys === 'string') {
     keys = keys.replace(/\"|&nbsp;|\\/g, '').replace(/(^\s*)|(\s*$)/g, '')
-    if (keys == '' || keys == null || keys == 'null' || keys === 'undefined') {
+    if (keys === '' || keys == null || keys == 'null' || keys === 'undefined') {
       return true
     } else {
       return false
@@ -107,7 +90,7 @@ export const isEmpty = (keys) => {
   } else if (typeof keys === 'boolean') {
     return false
   } else if (typeof keys === 'object') {
-    if (JSON.stringify(keys) == '{}') {
+    if (JSON.stringify(keys) === '{}') {
       return true
     } else if (keys == null) { // null
       return true
@@ -141,7 +124,6 @@ export const showMessage = () => {
  * 读取base64
  */
 export const readFile = file => {
-  console.log(file)
   // var file = this.files[0];
   // 判断是否是图片类型
   if (!/image\/\w+/.test(file.raw.type)) {
@@ -196,4 +178,23 @@ export const setContentHeight = (that, ele, height) => {
   that.$nextTick(() => {
     ele.style.height = (document.body.clientHeight - height) + 'px'
   })
+}
+
+// get Jobs
+export const getJobs = () => {
+  const jobs = [{
+    value: 'PG',
+    label: 'PG'
+  }, {
+    value: 'SE',
+    label: 'SE'
+  }, {
+    value: 'SSE',
+    label: 'SSE'
+  }, {
+    value: 'PM',
+    label: 'PM'
+  }]
+
+  return jobs
 }

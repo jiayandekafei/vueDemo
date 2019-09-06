@@ -3,12 +3,14 @@
         <search-item @showDialog="showAddUserDialog" @searchList="getUserList" @onBatchDelUser="onBatchDelUser"></search-item>
         <div class="table_container">
             <el-table
+             class="tablelist"
                 v-loading="loading"
                 :data="tableData"
                 style="width: 100%"
                 align='center'
                 @select="selectTable"
                 @select-all="selectAll"
+                :span-method="rowSpanByGroup"
                 >
               <el-table-column
                 v-if="idFlag"
@@ -25,12 +27,23 @@
               <el-table-column
                 prop="username"
                 label="用户姓名"
-                align='center'
-                width="80">
+                width="240">
             </el-table-column>
             <el-table-column
                 prop="email"
                 label="邮箱"
+                 width="340"
+                >
+            </el-table-column>
+            <el-table-column
+                prop="group.name"
+                label="所属项目"
+                align='center'
+                >
+            </el-table-column>
+             <el-table-column
+                prop="role.name"
+                label="角色"
                 align='center'
                 >
             </el-table-column>
@@ -38,16 +51,22 @@
                 prop="job"
                 label="职位"
                 align='center'
-                width="130"
                 :formatter="formatterType"
                 :filters="fields.job.filter.list"
                 :filter-method="filterType">
             </el-table-column>
+             <el-table-column
+                prop="status"
+                label="状态"
+                align='center'
+                >
+            </el-table-column>
+            
             <el-table-column
                 prop="operation"
                 align='center'
                 label="操作"
-                width="180">
+                width="360">
                 <template slot-scope='scope'>
                     <el-button 
                         type="warning" 
@@ -61,6 +80,18 @@
                         size="mini"
                         @click='onDeleteMoney(scope.row,scope.$index)'
                     >删除</el-button>
+                     <el-button 
+                        type="green" 
+                        icon='edit' 
+                        size="mini"
+                        @click='onEditMoney(scope.row)'
+                    >approve</el-button>
+                　　 <el-button 
+                        type="green" 
+                        icon='edit' 
+                        size="mini"
+                        @click='onEditMoney(scope.row)'
+                    >reject</el-button>
                 </template>
             </el-table-column>
             </el-table>
@@ -89,15 +120,10 @@
                 rowIds:[],
                 sortnum:0,
                 job_list: {
-                    0: '提现',
-                    1: '提现手续费',
-                    2: '提现锁定',
-                    3: '理财服务退出',
-                    4: '购买宜定盈',
-                    5: '充值',
-                    6: '优惠券',
-                    7: '充值礼券',
-                    8: '转账'
+                    0: 'PG',
+                    1: 'SE',
+                    2: 'SSE',
+                    3: 'PM',
                 },
                 addUserDialog:{  
                     show:false,
@@ -114,32 +140,17 @@
                     job:{
                         filter: {
                             list: [{
-                                text: '提现',
+                                text: 'PG',
                                 value: 0
                             },{
-                                text: '提现手续费',
+                                text: 'SE',
                                 value: 1
                             }, {
-                                text: '提现锁定',
+                                text: 'SSE',
                                 value: 2
                             }, {
-                                text: '理财服务退出',
+                                text: 'PM',
                                 value: 3
-                            }, {
-                                text: '购买宜定盈',
-                                value: 4
-                            }, {
-                                text: '充值',
-                                value: 5
-                            }, {
-                                text: '优惠券',
-                                value: 6
-                            }, {
-                                text: '充值礼券',
-                                value: 7
-                            }, {
-                                text: '转账',
-                                value: 8
                             }],
                             multiple: true
                         }
@@ -168,14 +179,15 @@
              },
             // 获取用户列表数据
             getUserList(){
+                const _this =this
                 const para = {
                     userId:'1',
                     superuser:'Y',
                 };
                 this.$api.user.getUserList(para).then(res => {
-                     this.loading = false;
-                     this.pageTotal = res.data.total
-                     this.tableData = res.data.users
+                     _this.loading = false;
+                     _this.pageTotal = res.data.total
+                     _this.tableData = res.data.data.users
                 })
             },
             // 显示资金弹框
@@ -266,8 +278,24 @@
                     isFlag = true;
                 }
                 this.$store.commit('SET_SEARCHBTN_DISABLED',isFlag);
+            },
+           rowSpanByGroup({ row, column, rowIndex, columnIndex }) {
+                if (columnIndex === 0) {
+                if (rowIndex % 2 === 0) {
+                    return {
+                    rowspan: 2,
+                    colspan: 1
+                    };
+                } else {
+                    return {
+                    rowspan: 0,
+                    colspan: 0
+                    };
+                }
+                }
             }
         },
+        
     }
 </script>
 
@@ -285,6 +313,11 @@
         margin-top: 10px;
     }
      
+    td {
+        /* border-left: 1px solid #EBEEF5; */
+        /* border-right: 1px solid #EBEEF5; */
+        border: 1px solid #EBEEF5 !important;
+    }
 </style>
 
 

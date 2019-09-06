@@ -1,8 +1,9 @@
 <template>
     <div class="tree">     
-    <el-tree :data="data5" node-key="id" default-expand-all >
-      <span class="custom-tree-node" slot-scope="{ node, data }">
-        <el-radio v-if="showRadio(node)" v-model="node.radio" :label="node.id">{{ node.label }}</el-radio>
+    <el-tree :data="data5" node-key="id"  default-expand-all >
+      <span class="custom-tree-node" slot-scope="{node}">
+        <el-radio v-if="showRadio(node)" v-model="node.parent.radio" :label="node.id" @change="setParent(node)" >{{ node.label }}</el-radio>
+        <el-checkbox v-else-if="showCheckbox(node)" v-model="node.checked" @change="clearChildren(node)">{{ node.label }}</el-checkbox> 
         <span v-else>{{ node.label }}</span>
       </span>
     </el-tree>
@@ -13,69 +14,46 @@
     export default {
         data () {
              const data = [{
+                    label: '所属项目组及其角色',
+                    children: [{
                     id: 1,
-                    label: '一级 1',
+                    label: 'group1',
                     children: [{
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [{
-                        id: 9,
-                        label: '三级 1-1-1',
-                        radio: ''
+                        id: 3,
+                        label: 'admin'
                     }, {
-                        id: 10,
-                        label: '三级 1-1-2',
-                        radio: ''
-                    }]
-                    }]
-                }, {
-                    id: 2,
-                    label: '一级 2',
-                    children: [{
-                    id: 5,
-                    label: '二级 2-1',
-                    radio: ''
+                        id: 4,
+                        label: 'PM'
                     }, {
-                    id: 6,
-                    label: '二级 2-2',
-                    radio: ''
-                    }]
-                }, {
-                    id: 3,
-                    label: '一级 3',
-                    children: [{
-                    id: 7,
-                    label: '二级 3-1',
-                    radio: ''
-                    }, {
-                    id: 8,
-                    label: '二级 3-2',
-                    radio: ''
-                    }]
-              }];
+                        id: 5,
+                        label: 'user'
+                    }],
+                    radio:'',
+                    checked:true
+                     }]
+                }];
         return {
-            data5: JSON.parse(JSON.stringify(data))
+            data5: JSON.parse(JSON.stringify(data)),
+
               }
         },
         methods: {
             showRadio(node){
                 return node.childNodes.length === 0 ? true : false
             },
-            handleClick(data, checked, node){
-                 if(checked == true){
-                     this.checkedId = data.id;
-                     this.$refs.treeForm.setCheckedNodes([data]);
-                 }
+            showCheckbox(node){
+                return node.childNodes.length === 3 ? true : false
             },
-            nodeClick(data,checked,node){
-                this.checkedId = data.id
-                this.$refs.treeForm.setCheckedNodes([data]);
+            setParent(node){
+
+                 node.parent.checked = true
+            },
+            clearChildren(node){
+          if(node.checked===false)     
+                {
+                node.radio= ''
+                } 
                 
-            },
-            checkGroupNode: function (a, b) {
-                if (b.checkedKeys.length > 0) {
-                this.$refs.DeviceGroupTree.setCheckedKeys([a.id]);
-                }
             }
         }
     }

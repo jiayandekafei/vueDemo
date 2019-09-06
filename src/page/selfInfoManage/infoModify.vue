@@ -13,14 +13,20 @@
             <el-form-item label="电邮" prop="email">
               <el-input v-model="infoForm.email" size="mini" placeholder="请输入绑定邮箱"></el-input>
             </el-form-item>
-            <el-form-item label="所属组织以及角色" prop="props">
-              <el-cascader :options="options"  :props="infoForm.props" clearable></el-cascader>
-            </el-form-item>
             <el-form-item  label="职位" prop="job">
-              <el-select style="" v-model="infoForm.job" auto-complete="off" placeholder="please input job title">
+              <el-select  v-model="infoForm.job" auto-complete="off" placeholder="please input job title">
                 <el-option v-for="item in jobs" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
+          </el-form-item>
+          <el-form-item>
+              <el-tree :data="infoForm.group" >
+              <span class="custom-tree-node" slot-scope="{node,data}">
+                <el-radio v-if="showRadio(node)" v-model="node.parent.data.radio" :label="data.id" @change="setParent(node)" >{{ node.label }}</el-radio>
+                <el-checkbox v-else-if="showCheckbox(node)" v-model="data.checked" :label="data.id" @change="clearChildren(node)">{{ node.label}}</el-checkbox> 
+                <span v-else>{{ node.label }}</span>
+              </span>
+            </el-tree>
           </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('infoForm')">提交</el-button>
@@ -35,69 +41,23 @@
 
 <script>
 import * as mutils from "@/utils/mUtils";
-
+  import { getToken } from '@/utils/auth'
 export default {
   data() {
     return {
-      infoForm: {
-        props: { multiple: true },
-        username: "",
-        email: "",
-        job: '',
-      },
-      options: [
-          {
-            value: 1,
-            label: "项目一",
-            children: [
-              {
-                value: 2,
-                label: "Admin"
-              },
-              {
-                value: 7,
-                label: "PM"
-              },
-              {
-                value: 12,
-                label: "User"
-              }
-            ]
-          },   {
-            value: 2,
-            label: "项目二",
-            children: [
-              {
-                value: 2,
-                label: "Admin"
-              },
-              {
-                value: 7,
-                label: "PM"
-              },
-              {
-                value: 12,
-                label: "User"
-              }
-            ]
-          }
-        ],
-        jobs: [{
-          value: 'PG',
-          label: 'PG'
-        }, {
-          value: 'SE',
-          label: 'SE'
-        }, {
-          value: 'SSE',
-          label: 'SSE'
-        }, {
-          value: 'PM',
-          label: 'PM'
-        }],
-      infoRules: {
+        infoForm: {
+          props: { multiple: true },
+          username: '',
+          email: '',
+          job: '',
+          group: '',
+          jobs : ''
+        },
+       jobs : JSON.parse(JSON.stringify(mutils.getJobs())),
+       infoRules: {
         email: [{ required: true, validator: validateEmail, trigger: "blur" }]
       }
+     
     };
      
     // 附带callback(),是在明确通过验证的情况下去掉输入框上的loading
@@ -114,8 +74,15 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+   this.getGroupRole()
+  },
   mounted() {
+    const userinfo  =this.$store.getters.userinfo
+    this.infoForm.username=userinfo.username
+    this.infoForm.email=userinfo.email
+    this.infoForm.job=userinfo.jobTitle
+ 
     mutils.setContentHeight(this, this.$refs.fillcontain, 170);
   },
   methods: {
@@ -125,6 +92,31 @@ export default {
         message: message
       });
     },
+    setParent(node){
+      node.parent.data.checked=true
+    },
+     setReqBody() {
+       var reqBody={       
+         username:this.infoForm.username,
+	       email:this.infoForm.email,
+		     job_title:this.infoForm.job,
+	       groups: []
+        };
+       var groups=[];
+       var group={
+         groupId:'',
+         roleId:''
+       };
+       const children = this.infoForm.group[0].children;
+       children.forEach(element => {
+          if(element.checked===true){
+            group.groupId=element.radio.id;
+            groups.push(group);
+          }
+       });
+       reqBody.groups=groups;
+       return reqBody
+    },
     showUsername() {
       let userinfo = mutils.getStore("userinfo");
       this.infoForm.username = userinfo.username;
@@ -132,30 +124,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-        
-            this.showMessage("success", "update scussfully");
-          
           //保存修改的相关信息
           let userinfo = this.infoForm;
-      
-          let userData = Object.assign(userinfo, phoneinfo);
-          // axios({
-          //     type:'get',
-          //     path:'/api/user/infoModify',
-          //     data:userData,
-          //     fn:data=>{
-          // 		console.log(data);
-          // 		if(data.status == 1){
-          // 			this.showMessage('success','修改密码成功~');
-          //             this.$router.push('/infoList');
-          // 		}else{
-          // 			 this.$message.error('修改失败请重试')
-          // 		}
-          // 	},
-          // 	errFn:(res)=>{
-          //         this.showMessage('error',res.message);
-          //     }
-          // })
+          this.$api.user.updateUserInfo(this.setReqBody() ).then(res =>{
+            this.showMessage("success", "update scussfully");
+          });
         } else {
           console.log("error submit!!");
           return false;
@@ -164,6 +137,27 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+     showRadio(node){
+                return node.childNodes.length === 0 ? true : false
+            },
+    showCheckbox(node){
+        return node.childNodes.length === 3 ? true : false
+    },
+ 
+    clearChildren(node){
+       if(node.checked===false) {
+         node.data.radio= ''
+        } 
+    },
+    
+    getGroupRole(){
+       let _this=this;
+			 this.$api.user.getGroupTree(getToken('userid')).then(res => {
+              const groups = res.data.data;
+              groups[0].label=this.$t('commons.groupRole')
+              _this.infoForm.group= JSON.parse(JSON.stringify(groups));
+              });
     }
   }
 };
