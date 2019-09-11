@@ -34,8 +34,8 @@
 			return {
 				logo:logoImg,
 				loginForm: {
-					username: 'admin',
-					password: '12356'
+					username: 'zhangxiqin',
+					password: '123456'
 				},
 				rules: {
 					username: [
