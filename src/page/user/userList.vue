@@ -34,15 +34,10 @@
 
         <el-table-column prop="operation" align="center" label="操作" width="360">
           <template slot-scope="scope">
-            <el-button type="warning" icon="edit" size="mini" @click="onEditMoney(scope.row)">编辑</el-button>
-            <el-button
-              type="danger"
-              icon="delete"
-              size="mini"
-              @click="onDeleteMoney(scope.row,scope.$index)"
-            >删除</el-button>
-            <el-button type="green" icon="edit" size="mini" @click="onEditMoney(scope.row)">approve</el-button>
-            <el-button type="green" icon="edit" size="mini" @click="onEditMoney(scope.row)">reject</el-button>
+            <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)">编辑</el-button>
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row,scope.$index)" >删除</el-button>
+            <el-button type="success" icon="edit" size="mini" @click="onApprove(scope.row)" :disabled="aprroveButDisable">通过</el-button>
+            <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="rejectButDisable">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,6 +67,8 @@ import Pagination from "@/components/pagination";
 export default {
   data() {
     return {
+      aprroveButDisable: true,
+      rejectButDisable: true,
       tableData: [],
       tableHeight: 0,
       loading: true,
@@ -90,9 +87,9 @@ export default {
         show: false,
         dialogRow: {}
       },
-      incomePayData: {
+      pageData: {
         page: 1,
-        limit: 20,
+        limit: 2,
         name: ""
       },
       pageTotal: 0,
@@ -150,10 +147,10 @@ export default {
       };
       this.$api.user.getUserList(para).then(res => {
         _this.loading = false;
-        _this.pageTotal = res.data.total;
+        _this.pageTotal = res.data.data.total;
         var _users = [];
-        _this.tableData = res.data.data.users;
         res.data.data.users.forEach(user => {
+          this.userApproveDisabled(user.status)
           var _user = {};
           var groupLength = user.groups.length;
           if (user.groups.length === 0) {
@@ -188,7 +185,7 @@ export default {
       _user.email = user.email;
       _user.job = user.jobTitle;
     },
-    // 显示资金弹框
+    // 显示用户弹框
     showAddUserDialog(val) {
       this.$store.commit("SET_DIALOG_TITLE", val);
       this.addUserDialog.show = true;
@@ -198,12 +195,12 @@ export default {
     },
     // 上下分页
     handleCurrentChange(val) {
-      this.incomePayData.page = val;
+      this.pageData.page = val;
       this.getUserList();
     },
     // 每页显示多少条
     handleSizeChange(val) {
-      this.incomePayData.limit = val;
+      this.pageData.limit = val;
       this.getUserList();
     },
 
@@ -219,7 +216,7 @@ export default {
       return this.job_list[value] == this.job_list[item.job];
     },
     // 编辑操作方法
-    onEditMoney(row) {
+    onEditUser(row) {
       this.addUserDialog.dialogRow = row;
       this.showAddUserDialog();
     },
@@ -276,6 +273,14 @@ export default {
         isFlag = true;
       }
       this.$store.commit("SET_SEARCHBTN_DISABLED", isFlag);
+    },
+
+    userApproveDisabled(status){
+      if('watting for approve'=== status ){
+        this.aprroveButDisable=false
+        this.rejectButDisable=false
+      }
+
     },
     rowSpanByGroup({ row, column, rowIndex, columnIndex }) {
       const groups = this.tableData[rowIndex].groups;

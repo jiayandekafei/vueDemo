@@ -61,11 +61,11 @@ const user = {
     },
     SET_DIALOG_TITLE: (state, type) => {
       if (type === 'add') {
-        state.addFundDialog.title = '新增用户'
-        state.addFundDialog.type = 'add'
+        state.addUserDialog.title = '新增用户'
+        state.addUserDialog.type = 'add'
       } else {
-        state.addFundDialog.title = '编辑用户信息'
-        state.addFundDialog.type = 'edit'
+        state.addUserDialog.title = '编辑用户信息'
+        state.addUserDialog.type = 'edit'
       }
     },
     SET_SEARCH: (state, payload) => {
@@ -85,7 +85,17 @@ const user = {
           resolve()
         })
       })
+    },
+    // 获取用户列表
+    GetUserList ({commit}, reqData) {
+      return new Promise(resolve => {
+        api.user.getUserList(reqData).then(response => {
+          const data = response.data
+          resolve(data)
+        })
+      })
     }
+
   }
 }
 
