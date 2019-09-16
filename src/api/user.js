@@ -25,6 +25,14 @@ const user = {
   // get group tree
   getGroupTree (userId) {
     return instance.get(base.dev + '/user/grouptree/' + userId)
+  },
+  // delete user
+  deleteUser (userId) {
+    return instance.delete(base.dev + '/user/' + userId)
+  },
+  // delete user
+  batchDeleteUser (para) {
+    return instance.post(base.dev + '/user/deleteBatch', para)
   }
 
 }

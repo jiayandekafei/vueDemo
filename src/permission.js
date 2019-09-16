@@ -3,7 +3,6 @@ import store from './store'
 import api from './api'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
-import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // 验权(从cookie中获取)
 import {setTitle} from '@/utils/mUtils' // 设置浏览器头部标题
 
@@ -26,7 +25,7 @@ router.beforeEach((to, from, next) => {
   if (getToken('Token')) {
     /* has token */
     if (to.path === '/login') {
-      next({ path: '/' }) // 会匹配到path:'',后面的path:'*'还没有生成;
+      next() // 会匹配到path:'',后面的path:'*'还没有生成;
       NProgress.done()
     } else {
       // 用户登录成功之后，每次点击路由都进行了角色的判断;
@@ -44,7 +43,6 @@ router.beforeEach((to, from, next) => {
           if (roles.length === 0) {
             roles.push('guest')
           }
-          console.log('roles :' + roles)
           store.commit('SET_ROLES', roles)
           store.commit('SET_NAME', userinfo.username)
           store.commit('SET_AVATAR', userinfo.username)

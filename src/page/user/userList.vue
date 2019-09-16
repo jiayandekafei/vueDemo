@@ -35,7 +35,7 @@
         <el-table-column prop="operation" align="center" label="操作" width="360">
           <template slot-scope="scope">
             <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)">编辑</el-button>
-            <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row,scope.$index)" >删除</el-button>
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" >删除</el-button>
             <el-button type="success" icon="edit" size="mini" @click="onApprove(scope.row)" :disabled="aprroveButDisable">通过</el-button>
             <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="rejectButDisable">拒绝</el-button>
           </template>
@@ -184,6 +184,9 @@ export default {
       _user.status = user.status;
       _user.email = user.email;
       _user.job = user.jobTitle;
+      var groups = user.group;
+      groups[0].label=this.$t('commons.groupRole')
+      _user.group = groups;
     },
     // 显示用户弹框
     showAddUserDialog(val) {
@@ -221,13 +224,11 @@ export default {
       this.showAddUserDialog();
     },
     // 删除数据
-    onDeleteMoney(row) {
+    onDeleteUser(row) {
       this.$confirm("确认删除该记录吗?", "提示", {
         type: "warning"
-      })
-        .then(() => {
-          const para = { id: row.id };
-          removeMoney(para).then(res => {
+      }).then(() => {
+          this.$api.user.deleteUser(row.userId).then(res => {
             this.$message({
               message: "删除成功",
               type: "success"
@@ -244,7 +245,7 @@ export default {
         .then(() => {
           const ids = this.rowIds.map(item => item.id).toString();
           const para = { ids: ids };
-          batchremoveMoney(para).then(res => {
+          this.$api.user.batchDeleteUser(para).then(res => {
             this.$message({
               message: "批量删除成功",
               type: "success"

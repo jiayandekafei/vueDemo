@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import * as mutils from "@/utils/mUtils";
+  import * as mutils from "@/utils/mUtils";
   import { getToken } from '@/utils/auth'
 export default {
   data() {

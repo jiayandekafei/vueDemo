@@ -1,8 +1,8 @@
 import axios from 'axios'
 import router from '../router'
 import store from '../store/index'
-import { Message } from 'element-ui'
-import { getToken, removeToken } from '@/utils/auth'
+import { Message, MessageBox } from 'element-ui'
+import { getToken } from '@/utils/auth'
 /**
   * 提示函数
   * 禁止点击蒙层、显示一秒后关闭
@@ -20,10 +20,11 @@ const tip = msg => {
   * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
   */
 const toLogin = () => {
-  return new Promise((resolve, reject) => {
-    store.commit('SET_ROLES', [])
-    removeToken('Token')
-    resolve()
+  router.replace({
+    path: '/login',
+    query: {
+      redirect: router.currentRoute.fullPath
+    }
   })
 }
 
@@ -37,18 +38,24 @@ const errorHandle = (status, other) => {
     // 401: 未登录状态，跳转登录页
     case 401:
       tip('invalid user name or password')
-      // toLogin()
+      toLogin()
       break
       // 403 token过期
       // 清除token并跳转登录页
     case 403:
-      tip('登录过期，请重新登录')
-      toLogin()
-      removeToken('Token')
+      MessageBox.confirm('token过期，可以取消继续留在该页面，或者重新登录', '确定登出', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        toLogin().then(() => {
+          location.reload()// 为了重新实例化vue-router对象 避免bug
+        })
+      })
       break
       // 404请求不存在
     case 404:
-      // tip('请求的资源不存在')
+      tip('请求的资源不存在')
       break
     default:
       break

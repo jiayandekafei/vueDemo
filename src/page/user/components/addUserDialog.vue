@@ -16,7 +16,7 @@
         style="margin:10px;width:auto;"
       >
         <el-form-item prop="username" label="用户名:">
-          <el-input type="text" v-model="form.username"></el-input>
+          <el-input type="text" v-model="form.username"  :disabled="userNameTxtDisable"></el-input>
         </el-form-item>
         <el-form-item prop="email" label="邮箱:">
           <el-input type="text" v-model="form.email"></el-input>
@@ -61,11 +61,13 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import { getToken } from '@/utils/auth'
 export default {
   name: "addUserDialogs",
   data() {
     let validateData = (rule, value, callback) => {};
     return {
+      userNameTxtDisable: true,
       isVisible: this.isShow,
       form: {
         job: "",
@@ -112,11 +114,12 @@ export default {
   created() {
     if (this.addUserDialog.type === "edit") {
       this.form = this.dialogRow;
-      this.form.incomePayType = this.dialogRow.incomePayType.toString();
-      this.form.pay = -this.dialogRow.pay;
+      this.userNameTxtDisable=true
+      //this.$refs["form"].resetFields();
     } else {
-      this.getGroupRole();
-      this.$refs["form"].resetFields();
+      this.getGroupRole(0);
+     // this.$refs["form"].resetFields();
+     this.userNameTxtDisable=false
     }
   },
   mounted() {},
@@ -126,9 +129,21 @@ export default {
     closeDialog() {
       this.$emit("closeDialog");
     },
-    getGroupRole() {
+    showRadio(node){
+                return node.childNodes.length === 0 ? true : false
+            },
+    showCheckbox(node){
+        return node.childNodes.length === 3 ? true : false
+    },
+ 
+    clearChildren(node){
+       if(node.checked===false) {
+         node.data.radio= ''
+        } 
+    },
+    getGroupRole(userId) {
       let _this = this;
-      this.$api.user.getGroupTree(getToken("userid")).then(res => {
+      this.$api.user.getGroupTree(userId).then(res => {
         const groups = res.data.data;
         groups[0].label = this.$t("commons.groupRole");
         _this.form.group = JSON.parse(JSON.stringify(groups));
@@ -148,7 +163,7 @@ export default {
                 message: "修改成功",
                 type: "success"
               });
-              this.$refs["form"].resetFields();
+              this.$refs[form].resetFields();
               this.isVisible = false;
               this.$emit("getFundList");
             });
@@ -159,7 +174,7 @@ export default {
                 message: "新增成功",
                 type: "success"
               });
-              this.$refs["form"].resetFields();
+              this.$refs[form].resetFields();
               this.isVisible = false;
               this.$emit("getFundList");
             });
