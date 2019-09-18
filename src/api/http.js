@@ -100,7 +100,7 @@ instance.interceptors.response.use(
       // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
       store.commit('changeNetworkSuccess', false)
       tip('网络异常!')
-      router.push({path: 'refresh'})
+      router.push({path: 'login'})
     }
   })
 

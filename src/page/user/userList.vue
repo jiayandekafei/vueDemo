@@ -12,7 +12,7 @@
         :data="tableData"
         style="width: 100%"
         align="center"
-        @select="selectTable"
+        @selection-change="selectTable"
         @select-all="selectAll"
         :span-method="rowSpanByGroup"
        >
@@ -243,9 +243,10 @@ export default {
         type: "warning"
       })
         .then(() => {
-          const ids = this.rowIds.map(item => item.id).toString();
-          const para = { ids: ids };
+          const ids = this.rowIds.map(item => item.userId).toString();
+          const para = { userIds: ids };
           this.$api.user.batchDeleteUser(para).then(res => {
+            console.log(res)
             this.$message({
               message: "批量删除成功",
               type: "success"
@@ -256,7 +257,8 @@ export default {
         .catch(() => {});
     },
     // 当用户手动勾选数据行的 Checkbox 时触发的事件
-    selectTable(val, row) {
+    selectTable(val) {
+      this.rowIds=val;
       this.setSearchBtn(val);
     },
     // 用户全选checkbox时触发该事件
