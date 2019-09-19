@@ -125,7 +125,7 @@ export default {
   mounted() {},
   methods: {
     onScreeoutMoney() {},
-    onAddMoney() {},
+    onAddUser() {},
     closeDialog() {
       this.$emit("closeDialog");
     },
@@ -158,25 +158,25 @@ export default {
           const para = Object.assign({}, formData);
           // edit
           if (this.addUserDialog.type === "edit") {
-            updateMoney(para).then(res => {
+            this.$api.user.updateMoney(para).then(res => {
               this.$message({
                 message: "修改成功",
                 type: "success"
               });
               this.$refs[form].resetFields();
               this.isVisible = false;
-              this.$emit("getFundList");
+              this.$emit("getUserList");
             });
           } else {
             // add
-            addMoney(para).then(res => {
+            this.$api.user.adduser(para).then(res => {
               this.$message({
                 message: "新增成功",
                 type: "success"
               });
               this.$refs[form].resetFields();
               this.isVisible = false;
-              this.$emit("getFundList");
+              this.$emit("getUserList");
             });
           }
         }

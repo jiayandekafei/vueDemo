@@ -13,10 +13,13 @@ const user = {
     return instance.get(base.dev + '/user/' + userId)
   },
   // update  user
-  updateUserInfo (reqBody) {
+  updateUser (reqBody) {
     return instance.put(base.dev + '/user', JSON.stringify(reqBody))
   },
-
+  // update  user
+  addUser (reqBody) {
+    return instance.post(base.dev + '/user', JSON.stringify(reqBody))
+  },
   // user detail
   checkUser (username) {
     return instance.get(base.dev + '/user/checkUser/' + username)

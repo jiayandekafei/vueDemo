@@ -74,6 +74,7 @@
 					    // set username to vuex
 						this.$store.commit("SET_NAME",res.data.data.username)
 							setToken("Token",res.data.data.token)
+							setToken("superuser",res.data.data.superuser)
 							setToken("userid",res.data.data.userId)
 						_this.$router.push('/');
 						this.$store.dispatch('initLeftMenu'); //设置左边菜单始终为展开状态

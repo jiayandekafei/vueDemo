@@ -63,7 +63,7 @@ import * as mutils from "@/utils/mUtils";
 import SearchItem from "./components/searchItem";
 import addUserDialog from "./components/addUserDialog";
 import Pagination from "@/components/pagination";
-
+ import { getToken } from '@/utils/auth'
 export default {
   data() {
     return {
@@ -88,8 +88,8 @@ export default {
         dialogRow: {}
       },
       pageData: {
-        page: 1,
-        limit: 2,
+        pageNo: 1,
+        limit: 20,
         name: ""
       },
       pageTotal: 0,
@@ -141,10 +141,11 @@ export default {
     // 获取用户列表数据
     getUserList() {
       const _this = this;
-      const para = {
-        userId: "1",
-        superuser: "Y"
+      const currentUser = {
+        userId: getToken('userid'),
+        superuser: getToken('superuser')
       };
+      const para = Object.assign({},currentUser,this.pageData,this.search);
       this.$api.user.getUserList(para).then(res => {
         _this.loading = false;
         _this.pageTotal = res.data.data.total;
@@ -198,7 +199,7 @@ export default {
     },
     // 上下分页
     handleCurrentChange(val) {
-      this.pageData.page = val;
+      this.pageData.pageNo = val;
       this.getUserList();
     },
     // 每页显示多少条

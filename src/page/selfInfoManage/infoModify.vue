@@ -126,7 +126,7 @@ export default {
         if (valid) {
           //保存修改的相关信息
           let userinfo = this.infoForm;
-          this.$api.user.updateUserInfo(this.setReqBody() ).then(res =>{
+          this.$api.user.updateUser(this.setReqBody() ).then(res =>{
             this.showMessage("success", "update scussfully");
           });
         } else {

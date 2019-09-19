@@ -99,6 +99,29 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/customerManage',
+    name: 'customerManage',
+    meta: {
+      title: '客户管理',
+      icon: 'fa-customer',
+      roles: ['admin', 'PM']
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'customerList',
+        name: 'customerList',
+        meta: {
+          title: '客户一览',
+          icon: 'fa-customer',
+          routerType: 'leftmenu',
+          roles: ['admin', 'PM', 'user']
+        },
+        component: () => import('@/page/customer/customerList')
+      }
+    ]
+  },
+  {
     path: '/infoManage',
     name: 'infoManage',
     meta: {

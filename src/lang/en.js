@@ -1,4 +1,4 @@
-const zh = {
+const en = {
   // layout
   commons: {
     admin: 'Admin',
@@ -8,6 +8,8 @@ const zh = {
     userManage: 'Users',
     userList: 'userList',
     userApprove: 'userApprove',
+    customerManage: 'Customers',
+    customerList: 'customerList',
     infoManage: 'Infos',
     infoShow: 'InfoShow',
     infoShow1: 'InfoShow1',
@@ -37,4 +39,4 @@ const zh = {
   }
 }
 
-export default zh
+export default en
