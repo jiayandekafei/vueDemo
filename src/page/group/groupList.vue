@@ -1,9 +1,9 @@
 <template>
   <div class="fillcontain">
     <search-item
-      @showDialog="showAddCustomerDialog"
-      @searchList="getCustomerList"
-      @onBatchDelCustomer="onBatchDelCustomer"
+      @showDialog="showAddGroupDialog"
+      @searchList="getGroupList"
+      @onBatchDelGroup="onBatchDelGroup"
     ></search-item>
     <div class="table_container">
       <el-table
@@ -17,7 +17,11 @@
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
         <el-table-column type="selection" align="center" width="40"></el-table-column>
-        <el-table-column prop="customername" label="客户姓名" width="240"></el-table-column>
+        <el-table-column prop="groupname" label="项目姓名" width="240"></el-table-column>
+        <el-table-column prop="customername" label="客户名" width="240"></el-table-column>
+        <el-table-column v-if="showNotesInfo()" prop="notes_server" label="notes服务器" width="240"></el-table-column>
+        <el-table-column v-if="showNotesInfo()" prop="notes_user" label="notes服务器用户名" width="240"></el-table-column>
+        <el-table-column v-if="showNotesInfo()" prop="notes_password" label="notes服务器密码" width="240"></el-table-column>
         <el-table-column prop="description" label="简介" ></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="180">
           <template slot-scope="scope">
@@ -31,13 +35,13 @@
         @handleCurrentChange="handleCurrentChange"
         @handleSizeChange="handleSizeChange"
       ></pagination>
-      <addCustomerDialog
-        v-if="addCustomerDialog.show"
-        :isShow="addCustomerDialog.show"
-        :dialogRow="addCustomerDialog.dialogRow"
-        @getCustomerList="getCustomerList"
-        @closeDialog="hideaddCustomerDialog"
-      ></addCustomerDialog>
+      <addGroupDialog
+        v-if="addGroupDialog.show"
+        :isShow="addGroupDialog.show"
+        :dialogRow="addGroupDialog.dialogRow"
+        @getGroupList="getGroupList"
+        @closeDialog="hideaddGroupDialog"
+      ></addGroupDialog>
     </div>
   </div>
 </template>
@@ -46,7 +50,7 @@
 import { mapGetters } from "vuex";
 import * as mutils from "@/utils/mUtils";
 import SearchItem from "./components/searchItem";
-import addCustomerDialog from "./components/addCustomerDialog";
+import addGroupDialog from "./components/addGroupDialog";
 import Pagination from "@/components/pagination";
  import { getToken } from '@/utils/auth'
 export default {
@@ -60,7 +64,7 @@ export default {
       editid: "",
       rowIds: [],
       sortnum: 0,
-      addCustomerDialog: {
+      addGroupDialog: {
         show: false,
         dialogRow: {}
       },
@@ -70,18 +74,19 @@ export default {
         name: ""
       },
       pageTotal: 0,
+      customers,
     };
   },
   components: {
     SearchItem,
-    addCustomerDialog,
+    addGroupDialog,
     Pagination
   },
   computed: {
     ...mapGetters(["search"])
   },
   mounted() {
-    this.getCustomerList();
+    this.getGroupList();
   },
   methods: {
     setTableHeight() {
@@ -89,75 +94,75 @@ export default {
         this.tableHeight = document.body.clientHeight - 300;
       });
     },
-    // 获取用户列表数据
-    getCustomerList() {
+    // 获取项目列表数据
+    getGroupList() {
       const _this = this;
-      const currentCustomer = {
+      const currentGroup = {
         userId: getToken('userid'),
         superuser: getToken('superuser')
       };
-      const para = Object.assign({},currentCustomer,this.pageData,this.search);
-      this.$api.customer.getCustomerList(para).then(res => {
+      const para = Object.assign({},currentGroup,this.pageData,this.search);
+      this.$api.group.getGroupList(para).then(res => {
         _this.loading = false;
         _this.pageTotal = res.data.data.total;
        
-        _this.tableData = res.data.data.customers;
+        _this.tableData = res.data.data.groups;
       });
     },
 
     // 显示用户弹框
-    showAddCustomerDialog(val) {
+    showAddGroupDialog(val) {
       this.$store.commit("SET_DIALOG_TITLE", val);
-      this.addCustomerDialog.show = true;
+      this.addGroupDialog.show = true;
     },
-    hideaddCustomerDialog() {
-      this.addCustomerDialog.show = false;
+    hideaddGroupDialog() {
+      this.addGroupDialog.show = false;
     },
     // 上下分页
     handleCurrentChange(val) {
       this.pageData.pageNo = val;
-      this.getCustomerList();
+      this.getGroupList();
     },
     // 每页显示多少条
     handleSizeChange(val) {
       this.pageData.limit = val;
-      this.getCustomerList();
+      this.getGroupList();
     },
 
     // 编辑操作方法
-    onEditCustomer(row) {
-      this.addCustomerDialog.dialogRow = row;
-      this.showAddCustomerDialog();
+    onEditGroup(row) {
+      this.addGroupDialog.dialogRow = row;
+      this.showAddGroupDialog();
     },
     // 删除数据
-    onDeleteCustomer(row) {
+    onDeleteGroup(row) {
       this.$confirm("确认删除该记录吗?", "提示", {
         type: "warning"
       }).then(() => {
-          this.$api.customer.deleteCustomer(row.customer_id).then(res => {
+          this.$api.group.deleteGroup(row.group_id).then(res => {
             this.$message({
               message: "删除成功",
               type: "success"
             });
-            this.getCustomerList();
+            this.getGroupList();
           });
         })
         .catch(() => {});
     },
-    onBatchDelCustomer() {
+    onBatchDelGroup() {
       this.$confirm("确认批量删除记录吗?", "提示", {
         type: "warning"
       })
         .then(() => {
-          const ids = this.rowIds.map(item => item.customer_id).toString();
+          const ids = this.rowIds.map(item => item.group_id).toString();
           const para = { customerIds: ids };
-          this.$api.customer.batchDeleteCustomer(para).then(res => {
+          this.$api.group.batchDeleteGroup(para).then(res => {
             console.log(res)
             this.$message({
               message: "批量删除成功",
               type: "success"
             });
-            this.getCustomerList();
+            this.getGroupList();
           });
         })
         .catch(() => {});
@@ -183,7 +188,10 @@ export default {
       }
       this.$store.commit("SET_SEARCHBTN_DISABLED", isFlag);
     },
-
+    // 判断是否显示notes info
+    showNotesInfo() {
+      return getToken('superuser')=== 'Y' ? true : false
+    },
   }
 };
 </script>

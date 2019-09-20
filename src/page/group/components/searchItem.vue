@@ -7,15 +7,15 @@
             ref="search_data" 
             class="demo-form-inline search-form">
             <el-form-item label="">
-                <el-input v-model="search_data.name" placeholder="客户名"  @keyup.enter.native='onScreeoutCustomer("search_data")'></el-input>
+                <el-input v-model="search_data.name" placeholder="客户名"  @keyup.enter.native='onScreeoutGroup("search_data")'></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" size ="mini" icon="search" @click='onScreeoutCustomer("search_data")'>筛选</el-button>
+                <el-button type="primary" size ="mini" icon="search" @click='onScreeoutGroup("search_data")'>筛选</el-button>
             </el-form-item>
 
             <el-form-item class="btnRight">
-                <el-button type="primary" size ="mini" icon="view" @click='onBatchDelCustomer()' :disabled="searchBtnDisabled">批量删除</el-button>
-                <el-button type="primary" size ="mini" icon="view" @click='onAddCustomer()'>添加</el-button>
+                <el-button type="primary" size ="mini" icon="view" @click='onBatchDelGroup()' :disabled="searchBtnDisabled">批量删除</el-button>
+                <el-button type="primary" size ="mini" icon="view" @click='onAddGroup()'>添加</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -33,7 +33,7 @@
             },
             rules: {
                 name: [
-                    { required: true, message: '请输入客户名', trigger: 'blur' },
+                    { required: true, message: '请输入项目名', trigger: 'blur' },
                 ]
             }
           }
@@ -45,7 +45,7 @@
       created(){
       },
       methods:{
-          onScreeoutCustomer(searchForm){
+          onScreeoutGroup(searchForm){
               this.$refs[searchForm].validate((valid) => {
 					if (valid) {
                         this.$store.commit('SET_SEARCH',this.search_data);
@@ -53,11 +53,11 @@
                     }
               })
           },
-          onAddCustomer(){
+          onAddGroup(){
               this.$emit("showDialog",'add');
           },
-          onBatchDelCustomer(){
-              this.$emit("onBatchDelCustomer");
+          onBatchDelGroup(){
+              this.$emit("onBatchDelGroup");
           }
       }
   }

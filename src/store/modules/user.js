@@ -12,7 +12,7 @@ const user = {
     roles: [],
     browserHeaderTitle: mUtils.getStore('browserHeaderTitle') || 'pagoda',
     addUserDialog: {
-      title: '新增用户',
+      title: '',
       type: 'add'
     },
     search: {

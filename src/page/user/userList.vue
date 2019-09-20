@@ -36,8 +36,8 @@
           <template slot-scope="scope">
             <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)">编辑</el-button>
             <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" >删除</el-button>
-            <el-button type="success" icon="edit" size="mini" @click="onApprove(scope.row)" :disabled="aprroveButDisable">通过</el-button>
-            <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="rejectButDisable">拒绝</el-button>
+            <el-button type="success" icon="edit" size="mini" @click="onApprove(scope.row)" :disabled="scope.row.aprroveButDisable">通过</el-button>
+            <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="scope.row.rejectButDisable">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -50,7 +50,7 @@
         v-if="addUserDialog.show"
         :isShow="addUserDialog.show"
         :dialogRow="addUserDialog.dialogRow"
-        @getFundList="getUserList"
+        @getUserList="getUserList"
         @closeDialog="hideaddUserDialog"
       ></addUserDialog>
     </div>
@@ -67,8 +67,6 @@ import Pagination from "@/components/pagination";
 export default {
   data() {
     return {
-      aprroveButDisable: true,
-      rejectButDisable: true,
       tableData: [],
       tableHeight: 0,
       loading: true,
@@ -151,8 +149,11 @@ export default {
         _this.pageTotal = res.data.data.total;
         var _users = [];
         res.data.data.users.forEach(user => {
-          this.userApproveDisabled(user.status)
           var _user = {};
+           if(user.status==='W'){
+             _user.aprroveButDisable=false
+             _user.rejectButDisable=false
+           }
           var groupLength = user.groups.length;
           if (user.groups.length === 0) {
             _user.groups = 0;
@@ -277,14 +278,6 @@ export default {
         isFlag = true;
       }
       this.$store.commit("SET_SEARCHBTN_DISABLED", isFlag);
-    },
-
-    userApproveDisabled(status){
-      if('watting for approve'=== status ){
-        this.aprroveButDisable=false
-        this.rejectButDisable=false
-      }
-
     },
     rowSpanByGroup({ row, column, rowIndex, columnIndex }) {
       const groups = this.tableData[rowIndex].groups;

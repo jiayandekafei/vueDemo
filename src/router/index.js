@@ -104,7 +104,7 @@ export const asyncRouterMap = [
     meta: {
       title: '客户管理',
       icon: 'fa-customer',
-      roles: ['admin', 'PM']
+      roles: ['admin', 'PM', 'user']
     },
     component: Layout,
     children: [
@@ -118,6 +118,29 @@ export const asyncRouterMap = [
           roles: ['admin', 'PM', 'user']
         },
         component: () => import('@/page/customer/customerList')
+      }
+    ]
+  },
+  {
+    path: '/groupManage',
+    name: 'groupManage',
+    meta: {
+      title: '项目管理',
+      icon: 'fa-project',
+      roles: ['admin', 'PM', 'user']
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'groupList',
+        name: 'groupList',
+        meta: {
+          title: '项目一览',
+          icon: 'fa-project',
+          routerType: 'leftmenu',
+          roles: ['admin', 'PM', 'user']
+        },
+        component: () => import('@/page/group/groupList')
       }
     ]
   },

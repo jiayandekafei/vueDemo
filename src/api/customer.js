@@ -9,8 +9,8 @@ const customer = {
   },
 
   // Customer detail
-  getCustomerInfo (CustomerId) {
-    return instance.get(base.dev + '/customer/' + CustomerId)
+  getCustomerInfo (customerId) {
+    return instance.get(base.dev + '/customer/' + customerId)
   },
   // update  Customer
   updateCustomer (reqBody) {

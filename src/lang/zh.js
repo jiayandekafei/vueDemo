@@ -10,6 +10,8 @@ const zh = {
     userApprove: '用户审批',
     customerManage: '客户信息',
     customerList: '客户一览',
+    groupManage: '项目管理',
+    groupList: '项目一览',
     infoManage: '个人信息管理',
     infoShow: '个人信息',
     infoShow1: '个人信息子菜单1',
