@@ -280,7 +280,7 @@ export default {
     },
 
     userApproveDisabled(status){
-      if('watting for approve'=== status ){
+      if('W'=== status ){
         this.aprroveButDisable=false
         this.rejectButDisable=false
       }
