@@ -43,7 +43,7 @@ export default {
       form: {
       },
       form_rules: {
-        username: [
+        customername: [
           { required: true, message: "客户名不能为空！", trigger: "blur" }
         ]
       },

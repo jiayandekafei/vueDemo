@@ -110,7 +110,7 @@ export default {
        const children = this.infoForm.group[0].children;
        children.forEach(element => {
           if(element.checked===true){
-            group.groupId=element.radio.id;
+            group.groupId=element.radio;
             groups.push(group);
           }
        });

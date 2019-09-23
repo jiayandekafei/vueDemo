@@ -16,7 +16,7 @@ const user = {
   updateUser (reqBody) {
     return instance.put(base.dev + '/user', JSON.stringify(reqBody))
   },
-  // update  user
+  // add  user
   addUser (reqBody) {
     return instance.post(base.dev + '/user', JSON.stringify(reqBody))
   },

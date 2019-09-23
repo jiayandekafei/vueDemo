@@ -59,7 +59,7 @@ const user = {
     SET_USERINFO: (state, userinfo) => {
       state.userinfo = userinfo
     },
-    SET_DIALOG_TITLE: (state, type) => {
+    SET_USER_DIALOG_TITLE: (state, type) => {
       if (type === 'add') {
         state.addUserDialog.title = '新增用户'
         state.addUserDialog.type = 'add'

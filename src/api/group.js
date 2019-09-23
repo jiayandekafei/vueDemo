@@ -3,8 +3,8 @@ import instance from './http' // 导入http中创建的axios实例
 
 const group = {
   // group list
-  getGroupList () {
-    return instance.get(base.dev + '/group/list')
+  getGroupList (params) {
+    return instance.get(base.dev + '/group/list', {params})
   },
   // group detail
   getGroupInfo (groupId) {

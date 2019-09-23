@@ -25,8 +25,8 @@
         <el-table-column prop="description" label="简介" ></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="180">
           <template slot-scope="scope">
-            <el-button type="primary" icon="edit" size="mini" @click="onEditCustomer(scope.row)">编辑</el-button>
-            <el-button type="danger" icon="delete" size="mini" @click="onDeleteCustomer(scope.row)" >删除</el-button>
+            <el-button type="primary" icon="edit" size="mini" @click="onEditGroup(scope.row)">编辑</el-button>
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteGroup(scope.row)" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -74,7 +74,7 @@ export default {
         name: ""
       },
       pageTotal: 0,
-      customers,
+
     };
   },
   components: {
@@ -105,7 +105,6 @@ export default {
       this.$api.group.getGroupList(para).then(res => {
         _this.loading = false;
         _this.pageTotal = res.data.data.total;
-       
         _this.tableData = res.data.data.groups;
       });
     },
@@ -113,7 +112,7 @@ export default {
 
     // 显示用户弹框
     showAddGroupDialog(val) {
-      this.$store.commit("SET_DIALOG_TITLE", val);
+      this.$store.commit("SET_GROUP_DIALOG_TITLE", val);
       this.addGroupDialog.show = true;
     },
     hideaddGroupDialog() {
@@ -156,7 +155,7 @@ export default {
       })
         .then(() => {
           const ids = this.rowIds.map(item => item.group_id).toString();
-          const para = { customerIds: ids };
+          const para = { groupIds: ids };
           this.$api.group.batchDeleteGroup(para).then(res => {
             console.log(res)
             this.$message({
@@ -207,7 +206,7 @@ export default {
   width: 600px !important;
 }
 .pagination {
-  text-align: left;
+  text-align: right;
   margin-top: 10px;
 }
 </style>

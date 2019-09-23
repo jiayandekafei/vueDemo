@@ -94,7 +94,8 @@ export default {
       const _this = this;
       const currentCustomer = {
         userId: getToken('userid'),
-        superuser: getToken('superuser')
+        superuser: getToken('superuser'),
+        isSelect:false
       };
       const para = Object.assign({},currentCustomer,this.pageData,this.search);
       this.$api.customer.getCustomerList(para).then(res => {
@@ -107,7 +108,7 @@ export default {
 
     // 显示用户弹框
     showAddCustomerDialog(val) {
-      this.$store.commit("SET_DIALOG_TITLE", val);
+      this.$store.commit("SET_CUSTOMER_DIALOG_TITLE", val);
       this.addCustomerDialog.show = true;
     },
     hideaddCustomerDialog() {
@@ -198,7 +199,7 @@ export default {
   width: 600px !important;
 }
 .pagination {
-  text-align: left;
+  text-align: right;
   margin-top: 10px;
 }
 </style>

@@ -4,7 +4,6 @@ import instance from './http' // 导入http中创建的axios实例
 const customer = {
   // Customer list
   getCustomerList (params) {
-    console.log(JSON.stringify(params))
     return instance.get(base.dev + '/customer/list', {params})
   },
 

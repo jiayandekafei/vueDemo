@@ -151,8 +151,6 @@
 						email:  _this.registerForm.eamil,
 						job:  _this.registerForm.job
 						}).then(res => {
-						
-						console.log(res)
 								this.$message({
 									showClose: true,
 									duration: 3000,

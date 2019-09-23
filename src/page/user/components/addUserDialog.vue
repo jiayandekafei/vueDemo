@@ -52,7 +52,7 @@
         </el-form-item>
         <el-form-item class="text_right">
           <el-button @click="isVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit(form)">提 交</el-button>
+          <el-button type="primary" @click="onSubmit('form')">提 交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -65,7 +65,35 @@ import { getToken } from '@/utils/auth'
 export default {
   name: "addUserDialogs",
   data() {
-    let validateData = (rule, value, callback) => {};
+   //validate email 
+         let validateEmail = (rule, value, callback) => {
+               
+                let emailRegex = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if (value!=='' && !emailRegex.test(value)) {
+                    callback(new Error('邮箱格式不正确！'))
+                } else {
+                    callback();
+                }
+			};
+			//validate email 
+         let validateUsername = (rule, value, callback) => {
+           if(this.addUserDialog.type === "add"){
+              if(value == ''){
+                  callback(new Error('请输入用户名'));
+                  return;
+              }
+              this.$api.user.checkUser( this.form.username).then(res=>{
+                  if(res.data.data===true){
+                    callback(new Error('用户已存在！'))
+                      
+                    }else{
+                      callback();
+                    }
+              });
+           }else{
+              callback();
+           }
+         };
     return {
       userNameTxtDisable: true,
       isVisible: this.isShow,
@@ -94,7 +122,10 @@ export default {
       ],
       form_rules: {
         username: [
-          { required: true, message: "用户名不能为空！", trigger: "blur" }
+          { required: true,  validator:validateUsername }
+        ],
+        email: [
+          { required: false,  validator:validateEmail }
         ]
       },
       //详情弹框信息
@@ -132,6 +163,9 @@ export default {
     showRadio(node){
                 return node.childNodes.length === 0 ? true : false
             },
+    setParent(node){
+      node.parent.data.checked=true
+    },
     showCheckbox(node){
         return node.childNodes.length === 3 ? true : false
     },
@@ -149,32 +183,51 @@ export default {
         _this.form.group = JSON.parse(JSON.stringify(groups));
       });
     },
+    setReqBody() {
+       var reqBody={    
+         userId:this.form.userId,   
+         username:this.form.username,
+	       email:this.form.email,
+		     job_title:this.form.job,
+	       groups: []
+        };
+	     var groups= []
+       const children = this.form.group[0].children;
+       children.forEach(element => {
+          if(element.checked===true){
+             var group={};
+            group.group_id = element.id;
+            group.role_id = element.radio;
+            groups.push(group);
+          }
+       });
+       reqBody.groups=groups;
+       return reqBody
+    },
     //表单提交
     onSubmit(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs[form].validate((valid) => {
         if (valid) {
           //表单数据验证完成之后，提交数据;
-          let formData = this[form];
-          const para = Object.assign({}, formData);
           // edit
           if (this.addUserDialog.type === "edit") {
-            this.$api.user.updateMoney(para).then(res => {
+            this.$api.user.updateUser(this.setReqBody()).then(res => {
               this.$message({
                 message: "修改成功",
                 type: "success"
               });
-              this.$refs[form].resetFields();
+              //this.$refs[form].resetFields();
               this.isVisible = false;
               this.$emit("getUserList");
             });
           } else {
             // add
-            this.$api.user.adduser(para).then(res => {
+            this.$api.user.addUser(this.setReqBody()).then(res => {
               this.$message({
                 message: "新增成功",
                 type: "success"
               });
-              this.$refs[form].resetFields();
+              //this.$refs[form].resetFields();
               this.isVisible = false;
               this.$emit("getUserList");
             });

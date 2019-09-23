@@ -192,7 +192,7 @@ export default {
     },
     // 显示用户弹框
     showAddUserDialog(val) {
-      this.$store.commit("SET_DIALOG_TITLE", val);
+      this.$store.commit("SET_USER_DIALOG_TITLE", val);
       this.addUserDialog.show = true;
     },
     hideaddUserDialog() {
@@ -314,7 +314,7 @@ export default {
   width: 600px !important;
 }
 .pagination {
-  text-align: left;
+  text-align: right;
   margin-top: 10px;
 }
 </style>
