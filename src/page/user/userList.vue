@@ -279,17 +279,6 @@ export default {
       }
       this.$store.commit("SET_SEARCHBTN_DISABLED", isFlag);
     },
-<<<<<<< HEAD
-=======
-
-    userApproveDisabled(status){
-      if('W'=== status ){
-        this.aprroveButDisable=false
-        this.rejectButDisable=false
-      }
-
-    },
->>>>>>> 9b337aeea05da9756bf27c6770f38718bc4340b1
     rowSpanByGroup({ row, column, rowIndex, columnIndex }) {
       const groups = this.tableData[rowIndex].groups;
       if (columnIndex < 3 || columnIndex > 4) {
