@@ -71,6 +71,7 @@ export default {
       },
       pageTotal: 0,
     };
+
   },
   components: {
     SearchItem,

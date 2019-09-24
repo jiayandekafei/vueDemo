@@ -22,7 +22,7 @@ const user = {
   },
   // user detail
   checkUser (username) {
-    return instance.get(base.dev + '/user/checkUser/' + username)
+    return instance.get(base.dev + '/user/check/' + username)
   },
 
   // get group tree
@@ -36,8 +36,16 @@ const user = {
   // delete user
   batchDeleteUser (para) {
     return instance.post(base.dev + '/user/deleteBatch', para)
-  }
+  },
+  // check user's password
+  checkPassword (para) {
+    return instance.get(base.dev + '/user/password', para)
+  },
 
+  // update password
+  updatePassword (para) {
+    return instance.post(base.dev + 'user/password', JSON.stringify(para))
+  }
 }
 
 export default user

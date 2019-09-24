@@ -75,7 +75,7 @@ export default {
                     callback();
                 }
 			};
-			//validate email 
+			//validate username 
          let validateUsername = (rule, value, callback) => {
            if(this.addUserDialog.type === "add"){
               if(value == ''){

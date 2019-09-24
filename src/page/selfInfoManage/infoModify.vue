@@ -96,21 +96,20 @@ export default {
       node.parent.data.checked=true
     },
      setReqBody() {
-       var reqBody={       
+       var reqBody={   
+         userId: getToken('userid'),
          username:this.infoForm.username,
 	       email:this.infoForm.email,
 		     job_title:this.infoForm.job,
 	       groups: []
         };
        var groups=[];
-       var group={
-         groupId:'',
-         roleId:''
-       };
        const children = this.infoForm.group[0].children;
        children.forEach(element => {
           if(element.checked===true){
-            group.groupId=element.radio;
+             var group={};
+            group.group_id = element.id;
+            group.role_id = element.radio;
             groups.push(group);
           }
        });
@@ -125,9 +124,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //保存修改的相关信息
-          let userinfo = this.infoForm;
           this.$api.user.updateUser(this.setReqBody() ).then(res =>{
-            this.showMessage("success", "update scussfully");
+          let userinfo = this.infoForm;
+          this.$store.commit('SET_USERINFO', userinfo)
+          this.showMessage("success", "update scussfully");
+          this.getGroupRole()
+          location.reload
           });
         } else {
           console.log("error submit!!");

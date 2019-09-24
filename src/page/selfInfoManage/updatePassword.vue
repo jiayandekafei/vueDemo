@@ -34,9 +34,30 @@
 
 <script>
    import * as mutils from '@/utils/mUtils'
+   import {getToken}  from '@/utils/auth'
 
     export default {
         data(){
+            const para = {
+                     userId:getToken('userid'),
+                     password:this.pwdForm.password
+                 };
+             // validateField:对部分表单字段进行校验的方法
+            let validateOldpassword = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                    return;
+                } 
+                 
+                this.$api.user.checkPassword( para).then(res=>{
+                    if(res.data.data===true){
+                        callback(new Error('旧密码不正确！'))
+                        }else{
+                        callback();
+                        }
+                 });
+
+            };
             // validateField:对部分表单字段进行校验的方法
             let validateNewpassword = (rule, value, callback) => {
                 if (value === '') {
@@ -89,36 +110,13 @@
                     message: message
                 });
             },
-            showUsername(){
-                let userinfo = mutils.getStore('userinfo');
-                this.infoForm.username = userinfo.username;
-            },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                      this.showMessage('success','修改密码成功~');
-                        //保存修改的相关信息
-						let userinfo = this.infoForm;
-                        let phoneinfo = this.phoneForm;
-						let userData = Object.assign(userinfo, phoneinfo);
-                        // axios({
-                        //     type:'get',
-                        //     path:'/api/user/infoModify',
-                        //     data:userData,
-                        //     fn:data=>{
-						// 		console.log(data);
-						// 		if(data.status == 1){
-						// 			this.showMessage('success','修改密码成功~');
-                        //             this.$router.push('/infoList');
-						// 		}else{
-						// 			 this.$message.error('修改失败请重试')
-						// 		}
-						// 	},
-						// 	errFn:(res)=>{
-                        //         this.showMessage('error',res.message);
-                        //     }
-						// })
-
+                        this.$api.user.updatePassword(para).then(res => {
+                             this.showMessage('success','修改密码成功~');
+                             location.reload
+                         });
                     } else {
                         console.log('error submit!!');
                         return false;

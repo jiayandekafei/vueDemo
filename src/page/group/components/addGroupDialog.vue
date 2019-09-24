@@ -38,7 +38,7 @@
         </el-form-item>
         <el-form-item class="text_right">
           <el-button @click="isVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit(form)">提 交</el-button>
+          <el-button type="primary" @click="onSubmit('form')">提 交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -51,15 +51,33 @@ import { getToken } from '@/utils/auth'
 export default {
   name: "addGroupDialogs",
   data() {
-    let validateData = (rule, value, callback) => {};
+    //validate customername 
+      let validateGroupname = (rule, value, callback) => {
+        if(this.addGroupDialog.type === "add"){
+          if(value === ''){
+              callback(new Error('请输入项目名'));
+              return;
+          }
+          this.$api.group.checkGroup( this.form.groupname).then(res=>{
+              if(res.data.data===true){
+                callback(new Error('项目已存在！'))
+                  
+                }else{
+                  callback();
+                }
+          });
+        }else{
+          callback();
+        }
+      };
     return {
       GroupNameTxtDisable: true,
       isVisible: this.isShow,
       form: {
       },
       form_rules: {
-        username: [
-          { required: true, message: "项目名不能为空！", trigger: "blur" }
+        groupname: [
+          { required: true, validator:validateGroupname}
         ]
       },
       //详情弹框信息
@@ -113,7 +131,7 @@ export default {
           const para = Object.assign({}, formData);
           // edit
           if (this.addGroupDialog.type === "edit") {
-            this.$api.Group.updateGroup(para).then(res => {
+            this.$api.group.updateGroup(para).then(res => {
               this.$message({
                 message: "修改成功",
                 type: "success"

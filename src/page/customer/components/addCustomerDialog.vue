@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item class="text_right">
           <el-button @click="isVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit(form)">提 交</el-button>
+          <el-button type="primary" @click="onSubmit('form')">提 交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -36,7 +36,25 @@ import { getToken } from '@/utils/auth'
 export default {
   name: "addCustomerDialogs",
   data() {
-    let validateData = (rule, value, callback) => {};
+    //validate customername 
+      let validateCustomername = (rule, value, callback) => {
+        if(this.addCustomerDialog.type === "add"){
+          if(value === ''){
+              callback(new Error('请输入客户名'));
+              return;
+          }
+          this.$api.customer.checkCustomer( this.form.customername).then(res=>{
+              if(res.data.data===true){
+                callback(new Error('客户已存在！'))
+                  
+                }else{
+                  callback();
+                }
+          });
+        }else{
+          callback();
+        }
+      };
     return {
       customerNameTxtDisable: true,
       isVisible: this.isShow,
@@ -44,7 +62,7 @@ export default {
       },
       form_rules: {
         customername: [
-          { required: true, message: "客户名不能为空！", trigger: "blur" }
+          { required: true, validator:validateCustomername }
         ]
       },
       //详情弹框信息
@@ -73,7 +91,7 @@ export default {
   },
   mounted() {},
   methods: {
-    onScreeoutMoney() {},
+    showAddCustomerDialog() {},
     onAddCustomer() {},
     closeDialog() {
       this.$emit("closeDialog");
