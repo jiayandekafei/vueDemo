@@ -15,7 +15,7 @@
 
             <el-form-item class="btnRight">
                 <el-button type="primary" size ="mini" icon="view" @click='onBatchDelUser()' :disabled="searchBtnDisabled">批量删除</el-button>
-                <el-button type="primary" size ="mini" icon="view" @click='onAddUser()'>添加</el-button>
+                <el-button type="primary" size ="mini" icon="view" @click='onAddUser()' :disabled="addBtnDisabled">添加</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -23,11 +23,13 @@
 
 <script>
    import { mapGetters } from 'vuex'
+   import { getToken } from '@/utils/auth'
 
   export default {
       name:'searchItem',
       data(){
           return {
+            addBtnDisabled:true,
             search_data:{
                 name:''
             },
@@ -43,6 +45,7 @@
 
       },
       created(){
+          this.setAddBtn()
       },
       methods:{
           onScreeoutUser(searchForm){
@@ -58,6 +61,12 @@
           },
           onBatchDelUser(){
               this.$emit("onBatchDelUser");
+          },
+          setAddBtn(){
+              const roles = this.$store.getters.roles;
+                if(getToken('superuser')==='Y' || roles.indexof('PM')!==undefined){
+                   this.addBtnDisabled=false
+                }
           }
       }
   }

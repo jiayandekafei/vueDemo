@@ -184,16 +184,16 @@ export const setContentHeight = (that, ele, height) => {
 export const getJobs = () => {
   const jobs = [{
     value: 'PG',
-    label: 'PG'
+    text: 'PG'
   }, {
     value: 'SE',
-    label: 'SE'
+    text: 'SE'
   }, {
     value: 'SSE',
-    label: 'SSE'
+    text: 'SSE'
   }, {
     value: 'PM',
-    label: 'PM'
+    text: 'PM'
   }]
 
   return jobs

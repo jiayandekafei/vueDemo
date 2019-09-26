@@ -18,21 +18,13 @@
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
         <el-table-column type="selection" align="center" width="40"></el-table-column>
-        <el-table-column prop="username" label="用户姓名" width="240"></el-table-column>
-        <el-table-column prop="email" label="邮箱" width="340"></el-table-column>
+        <el-table-column prop="username" label="用户姓名"  sortable width="240"></el-table-column>
+        <el-table-column prop="email" label="邮箱" width="280"></el-table-column>
         <el-table-column prop="groupname" label="所属项目" align="center"></el-table-column>
-        <el-table-column prop="rolename" label="角色" align="center"></el-table-column>
-        <el-table-column
-          prop="job"
-          label="职位"
-          align="center"
-          :formatter="formatterType"
-          :filters="fields.job.filter.list"
-          :filter-method="filterType"
-        ></el-table-column>
-        <el-table-column prop="status" label="状态" align="center"></el-table-column>
-
-        <el-table-column prop="operation" align="center" label="操作" width="360">
+        <el-table-column prop="rolename" label="角色" align="center" width="100"></el-table-column>
+        <el-table-column prop="job" label="职位" align="center" width="100" :filters="fields.job.filter.list" :filter-method="filterJob"></el-table-column>
+        <el-table-column prop="status" label="状态" :formatter="formatStatus" :filters="fields.status.filter.list" :filter-method="filterStatus" align="center"></el-table-column>
+        <el-table-column prop="operation" align="center" label="操作" width="320">
           <template slot-scope="scope">
             <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)">编辑</el-button>
             <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" >删除</el-button>
@@ -41,18 +33,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :pageTotal="pageTotal"
-        @handleCurrentChange="handleCurrentChange"
-        @handleSizeChange="handleSizeChange"
-      ></pagination>
-      <addUserDialog
-        v-if="addUserDialog.show"
-        :isShow="addUserDialog.show"
-        :dialogRow="addUserDialog.dialogRow"
-        @getUserList="getUserList"
-        @closeDialog="hideaddUserDialog"
-      ></addUserDialog>
+      <pagination :pageTotal="pageTotal" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" ></pagination>
+      <addUserDialog v-if="addUserDialog.show" :isShow="addUserDialog.show" :dialogRow="addUserDialog.dialogRow" @getUserList="getUserList" @closeDialog="hideaddUserDialog"></addUserDialog>
     </div>
   </div>
 </template>
@@ -74,13 +56,6 @@ export default {
       isShow: false, //
       editid: "",
       rowIds: [],
-      sortnum: 0,
-      job_list: {
-        "PG": "PG",
-        "SE": "SE",
-        "SSE": "SSE",
-        "PM": "PM"
-      },
       addUserDialog: {
         show: false,
         dialogRow: {}
@@ -90,29 +65,32 @@ export default {
         limit: 20,
         name: ""
       },
+      status_list: {
+         "W": "waiting for approve",
+         "A": "approved",
+         "R": "rejected"
+            },
       pageTotal: 0,
       // 用于列表筛选
       fields: {
         job: {
           filter: {
-            list: [
-              {
-                text: "PG",
-                value: "PG"
-              },
-              {
-                text: "SE",
-                value: "SE"
-              },
-              {
-                text: "SSE",
-                value: "SSE"
-              },
-              {
-                text: "PM",
-                value: "PM"
-              }
-            ],
+            list: mutils.getJobs(),
+            multiple: true
+          }
+        },
+        status: {
+          filter: {
+            list: [{  
+                   text: 'waiting for approve',
+                   value: 'W'
+               },{
+                  text: 'approved',
+                  value: 'A'
+              }, {
+                 text: 'Rejected',
+                 value: 'R'
+              }],
             multiple: true
           }
         }
@@ -149,11 +127,15 @@ export default {
         _this.pageTotal = res.data.data.total;
         var _users = [];
         res.data.data.users.forEach(user => {
-          var _user = {};
+          var _user = {
+            aprroveButDisable:true,
+            rejectButDisable:true
+          };
            if(user.status==='W'){
-             _user.aprroveButDisable=false
-             _user.rejectButDisable=false
+             _user.aprroveButDisable=true
+             _user.rejectButDisable=true
            }
+           this.fields.status.filter.list.push()
           var groupLength = user.groups.length;
           if (user.groups.length === 0) {
             _user.groups = 0;
@@ -208,17 +190,11 @@ export default {
       this.pageData.limit = val;
       this.getUserList();
     },
-
-    /**
-     * 格式化状态
-     */
-    formatterType(item) {
-      //const type = parseInt(item.job);
-      return this.job_list[item.job];
+    filterJob(value, row) {
+      return row.job == value;
     },
-    filterType(value, item) {
-      // const type = parseInt(item.incomePayType);
-      return this.job_list[value] == this.job_list[item.job];
+    filterStatus(value, row) {
+      return row.status == value;
     },
     // 编辑操作方法
     onEditUser(row) {
@@ -299,7 +275,10 @@ export default {
           };
         }
       }
-    }
+    },
+    formatStatus(row, column) {
+       return this.status_list[row.status];
+    },
   }
 };
 </script>

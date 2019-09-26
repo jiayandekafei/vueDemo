@@ -62,6 +62,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { getToken } from '@/utils/auth'
+import * as mutils from "@/utils/mUtils";
 export default {
   name: "addUserDialogs",
   data() {
@@ -102,24 +103,7 @@ export default {
         username: "",
         group: ""
       },
-      jobs: [
-        {
-          value: "PG",
-          label: "PG"
-        },
-        {
-          value: "SE",
-          label: "SE"
-        },
-        {
-          value: "SSE",
-          label: "SSE"
-        },
-        {
-          value: "PM",
-          label: "PM"
-        }
-      ],
+      jobs: mutils.getJobs(),
       form_rules: {
         username: [
           { required: true,  validator:validateUsername }

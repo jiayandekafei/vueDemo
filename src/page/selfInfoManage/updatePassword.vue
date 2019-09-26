@@ -38,19 +38,22 @@
 
     export default {
         data(){
-            const para = {
-                     userId:getToken('userid'),
-                     password:this.pwdForm.password
-                 };
+
              // validateField:对部分表单字段进行校验的方法
             let validateOldpassword = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入密码'));
                     return;
                 } 
-                 
-                this.$api.user.checkPassword( para).then(res=>{
-                    if(res.data.data===true){
+                const para = {
+                     userId:getToken('userid'),
+                     password:this.pwdForm.password
+                 };
+                this.$api.user.checkPassword({
+                     userId:getToken('userid'),
+                     password:this.pwdForm.password
+                 }).then(res=>{
+                    if(res.data.data===false){
                         callback(new Error('旧密码不正确！'))
                         }else{
                         callback();
@@ -86,7 +89,7 @@
                },
                pwdRules: {
                     password: [
-                        { required: true, message: '请输入原密码', trigger: 'blur' },
+                        { required: true, validator:validateOldpassword, trigger: 'blur' },
                     ],
                     newpassword: [
                         { required: true, validator:validateNewpassword, trigger: 'blur' },
@@ -113,6 +116,10 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        const para = {
+                                userId:getToken('userid'),
+                                password:this.pwdForm.password
+                               };
                         this.$api.user.updatePassword(para).then(res => {
                              this.showMessage('success','修改密码成功~');
                              location.reload

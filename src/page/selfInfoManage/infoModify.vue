@@ -53,7 +53,7 @@ export default {
           group: '',
           jobs : ''
         },
-       jobs : JSON.parse(JSON.stringify(mutils.getJobs())),
+       jobs : mutils.getJobs(),
        infoRules: {
         email: [{ required: true, validator: validateEmail, trigger: "blur" }]
       }
