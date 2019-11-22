@@ -70,7 +70,7 @@ export default {
          let validateEmail = (rule, value, callback) => {
                
                 let emailRegex = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-                if (value!=='' && !emailRegex.test(value)) {
+                if (value!==undefined && value!==null && value!=='' && !emailRegex.test(value)) {
                     callback(new Error('邮箱格式不正确！'))
                 } else {
                     callback();
@@ -172,7 +172,7 @@ export default {
          userId:this.form.userId,   
          username:this.form.username,
 	       email:this.form.email,
-		     job_title:this.form.job,
+		     jobTitle:this.form.job,
 	       groups: []
         };
 	     var groups= []
@@ -180,8 +180,8 @@ export default {
        children.forEach(element => {
           if(element.checked===true){
              var group={};
-            group.group_id = element.id;
-            group.role_id = element.radio;
+            group.groupId = element.id;
+            group.roleId = element.radio;
             groups.push(group);
           }
        });

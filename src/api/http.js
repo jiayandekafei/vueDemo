@@ -63,7 +63,10 @@ const errorHandle = (status, other) => {
 }
 
 // 创建axios实例
-var instance = axios.create({timeout: 1000 * 12})
+var instance = axios.create({timeout: 1000 * 1200})
+// 设置超时处理
+instance.defaults.retry = 4
+instance.defaults.retryDelay = 1000
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'
 instance.defaults.headers.put['Content-Type'] = 'application/json'
@@ -101,7 +104,7 @@ instance.interceptors.response.use(
       // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
       store.commit('changeNetworkSuccess', false)
       tip('网络异常!')
-      router.push({path: 'login'})
+      router.push({path: '/login'})
     }
   })
 

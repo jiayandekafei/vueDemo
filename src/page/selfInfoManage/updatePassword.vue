@@ -2,12 +2,11 @@
     <div class="fillcontain" ref="fillcontain">
         <div class="info_container" ref="info_container">
             <el-row class="info_row row" :gutter="10">
-            
             <el-col :span="8">
                 <div class="area">
                     <div class="pwdarea">
                         <p class="title"><i class="fa fa-edit"></i>修改密码</p>
-                            <el-form class="form"  :model="pwdForm" :rules="pwdRules" ref="pwdForm" label-width="100px">
+                            <el-form class="form" :model="pwdForm" :rules="pwdRules" ref="pwdForm" label-width="100px">
                             <el-form-item label="原密码" prop="password">
                                 <el-input type="password" v-model="pwdForm.password" auto-complete="off" size="mini" placeholder="请输入原密码"></el-input>
                             </el-form-item>
@@ -25,8 +24,6 @@
                     </div>
                 </div>
             </el-col>
-
-            
             </el-row>
         </div>
     </div>
@@ -49,10 +46,7 @@
                      userId:getToken('userid'),
                      password:this.pwdForm.password
                  };
-                this.$api.user.checkPassword({
-                     userId:getToken('userid'),
-                     password:this.pwdForm.password
-                 }).then(res=>{
+                this.$api.user.checkPassword(para).then(res=>{
                     if(res.data.data===false){
                         callback(new Error('旧密码不正确！'))
                         }else{
@@ -83,9 +77,9 @@
             };
             return {
                pwdForm:{
-                   password:'',
-                   newpassword:'',
-                   surepassword:''
+                   password:'12356',
+                   newpassword:'test',
+                   surepassword:'test'
                },
                pwdRules: {
                     password: [
@@ -116,13 +110,15 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        const para = {
+                        const param = {
                                 userId:getToken('userid'),
-                                password:this.pwdForm.password
+                                password:this.pwdForm.surepassword
                                };
-                        this.$api.user.updatePassword(para).then(res => {
-                             this.showMessage('success','修改密码成功~');
-                             location.reload
+                        this.$api.user.updatePassword(param).then(res => {
+                             console.log(res);
+                             if(undefined!==res && res.status === 200 ){
+                                 this.showMessage('success','修改密码成功~');
+                             }
                          });
                     } else {
                         console.log('error submit!!');
@@ -131,7 +127,7 @@
                 });
             },
             resetForm(formName) {
-                this.$refs[formName].resetFields();
+               this.$refs[formName].resetFields();
             },
         }
     }

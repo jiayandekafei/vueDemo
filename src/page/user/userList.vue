@@ -14,21 +14,21 @@
         align="center"
         @selection-change="selectTable"
         @select-all="selectAll"
-        :span-method="rowSpanByGroup"
+       
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
         <el-table-column type="selection" align="center" width="40"></el-table-column>
         <el-table-column prop="username" label="用户姓名"  sortable width="240"></el-table-column>
         <el-table-column prop="email" label="邮箱" width="280"></el-table-column>
-        <el-table-column prop="groupname" label="所属项目" align="center"></el-table-column>
-        <el-table-column prop="rolename" label="角色" align="center" width="100"></el-table-column>
+        <el-table-column prop="groupname" label="所属项目" align="center" :filters="fields.group.filter.list" :filter-method="filterGroup"></el-table-column>
+        <el-table-column prop="rolename" label="角色" align="center" width="100" :filters="fields.role.filter.list" :filter-method="filterRole"></el-table-column>
         <el-table-column prop="job" label="职位" align="center" width="100" :filters="fields.job.filter.list" :filter-method="filterJob"></el-table-column>
         <el-table-column prop="status" label="状态" :formatter="formatStatus" :filters="fields.status.filter.list" :filter-method="filterStatus" align="center"></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="320">
           <template slot-scope="scope">
             <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)">编辑</el-button>
             <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" >删除</el-button>
-            <el-button type="success" icon="edit" size="mini" @click="onApprove(scope.row)" :disabled="scope.row.aprroveButDisable">通过</el-button>
+            <el-button type="success" icon="edit" size="mini"  @click="onApprove(scope.row)" :disabled="scope.row.aprroveButDisable">通过</el-button>
             <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="scope.row.rejectButDisable">拒绝</el-button>
           </template>
         </el-table-column>
@@ -49,6 +49,7 @@ import Pagination from "@/components/pagination";
 export default {
   data() {
     return {
+  
       tableData: [],
       tableHeight: 0,
       loading: true,
@@ -76,6 +77,18 @@ export default {
         job: {
           filter: {
             list: mutils.getJobs(),
+            multiple: true
+          }
+        },
+        group: {
+          filter: {
+            list: this.getFilterGroups(),
+            multiple: true
+          }
+        },
+        role: {
+          filter: {
+            list: mutils.getRoles(),
             multiple: true
           }
         },
@@ -109,6 +122,8 @@ export default {
     this.getUserList();
   },
   methods: {
+    //判断当前的登录角色
+    
     setTableHeight() {
       this.$nextTick(() => {
         this.tableHeight = document.body.clientHeight - 300;
@@ -127,33 +142,28 @@ export default {
         _this.pageTotal = res.data.data.total;
         var _users = [];
         res.data.data.users.forEach(user => {
-          var _user = {
-            aprroveButDisable:true,
-            rejectButDisable:true
-          };
-           if(user.status==='W'){
-             _user.aprroveButDisable=true
-             _user.rejectButDisable=true
-           }
-           this.fields.status.filter.list.push()
+          var _user = {   
+                   aprroveButDisable:this.isApproveEnable(user),
+                   rejectButDisable:this.isApproveEnable(user),
+                   groups : user.groups.length
+                   };
+          this.fields.status.filter.list.push()
           var groupLength = user.groups.length;
           if (user.groups.length === 0) {
-            _user.groups = 0;
             this.editCommonUserData(_user, user);
             _users.push(_user);
           } else {
             user.groups.forEach((group, index) => {
-              _user = {};
-              if (groupLength ==1){
-                _user.groups = 0;
-              }else if (index === 0) {
-                _user.groups = groupLength;
-              } else {
-                _user.groups = 1;
-              }
+              _user = { 
+                   aprroveButDisable:this.isApproveEnable(user),
+                   rejectButDisable:this.isApproveEnable(user),
+                   groups : user.groups.length
+                   };
               this.editCommonUserData(_user, user);
+              _user.groupId = group.groupId;
               _user.groupname = group.groupName;
               _user.rolename = group.roleName;
+
               _users.push(_user);
             });
           }
@@ -190,6 +200,12 @@ export default {
       this.pageData.limit = val;
       this.getUserList();
     },
+    filterGroup(value, row) {
+      return row.groupname == value;
+    },
+    filterRole(value, row) {
+      return row.rolename == value;
+    },
     filterJob(value, row) {
       return row.job == value;
     },
@@ -206,7 +222,10 @@ export default {
       this.$confirm("确认删除该记录吗?", "提示", {
         type: "warning"
       }).then(() => {
-          this.$api.user.deleteUser(row.userId).then(res => {
+         const param = {userId: row.userId,
+                        groupId: row.groupId,
+                        groupLength: row.groups };
+          this.$api.user.deleteUser(param).then(res => {
             this.$message({
               message: "删除成功",
               type: "success"
@@ -219,20 +238,42 @@ export default {
     onBatchDelUser() {
       this.$confirm("确认批量删除记录吗?", "提示", {
         type: "warning"
-      })
-        .then(() => {
-          const ids = this.rowIds.map(item => item.userId).toString();
-          const para = { userIds: ids };
-          this.$api.user.batchDeleteUser(para).then(res => {
-            console.log(res)
+      }).then(() => {
+        var users=[];
+         this.rowIds.map(item => {
+            var user={
+              userId: item.userId,
+              groupId: item.groupId,
+              groupLength: item.groups
+            }
+           users.push(user);
+         });
+         const param={users:users}
+          this.$api.user.batchDeleteUser(param).then(res => {
+               this.addUserDialog.show = false;
+               this.$message({
+                  message: "批量删除成功",
+                  type: "success"
+                });
+            this.getUserList();
+          }).catch( err=>{
             this.$message({
-              message: "批量删除成功",
+                  message: "删除失败!",
+                  type: "success"
+                });
+          });
+        })
+        .catch(() => {});
+    },
+    // approve user request
+    onApprove(row) {
+          this.$api.user.approveUser(row.userId).then(res => {
+            this.$message({
+              message: "approved",
               type: "success"
             });
             this.getUserList();
           });
-        })
-        .catch(() => {});
     },
     // 当用户手动勾选数据行的 Checkbox 时触发的事件
     selectTable(val) {
@@ -279,6 +320,32 @@ export default {
     formatStatus(row, column) {
        return this.status_list[row.status];
     },
+
+    isApproveEnable(row) {
+       if ('W'===row.status && ('Y'===getToken('superuser')
+                               ||'2'===store.getters.groupRole[row.groupId]
+                                )){
+           return false;
+       }else{
+           return true;
+       }
+    },
+
+    
+  // get groups
+  getFilterGroups () {
+    var filterGroups = []
+      this.$api.group.getGroupFilterList().then(res => {
+      res.data.data.groups.forEach(group => {
+        var _group = {
+          value: group.groupname,
+          text: group.groupname
+        }
+        filterGroups.push(_group)
+      })
+    })
+     return filterGroups
+   }
   }
 };
 </script>

@@ -139,7 +139,7 @@ export default {
       this.$confirm("确认删除该记录吗?", "提示", {
         type: "warning"
       }).then(() => {
-          this.$api.group.deleteGroup(row.group_id).then(res => {
+          this.$api.group.deleteGroup(row.groupId).then(res => {
             this.$message({
               message: "删除成功",
               type: "success"
@@ -154,7 +154,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          const ids = this.rowIds.map(item => item.group_id).toString();
+          const ids = this.rowIds.map(item => item.groupId).toString();
           const para = { groupIds: ids };
           this.$api.group.batchDeleteGroup(para).then(res => {
             console.log(res)

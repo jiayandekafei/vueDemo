@@ -18,7 +18,8 @@ const user = {
     search: {
       name: ''
     },
-    searchBtnDisabled: true
+    searchBtnDisabled: true,
+    groupRole: {}
   },
   getters: {
     userinfo: state => state.userinfo,
@@ -30,7 +31,8 @@ const user = {
     browserHeaderTitle: state => state.browserHeaderTitle,
     addUserDialog: state => state.addUserDialog,
     search: state => state.search,
-    searchBtnDisabled: state => state.searchBtnDisabled
+    searchBtnDisabled: state => state.searchBtnDisabled,
+    groupRole: state => state.groupRole
   },
   mutations: {
     SET_TOKEN (state, token) {
@@ -73,6 +75,9 @@ const user = {
     },
     SET_SEARCHBTN_DISABLED: (state, payload) => {
       state.searchBtnDisabled = payload
+    },
+    SET_GROUP_ROLE: (state, payload) => {
+      state.groupRole = payload
     }
   },
   actions: {

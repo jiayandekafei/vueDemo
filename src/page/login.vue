@@ -34,8 +34,8 @@
 			return {
 				logo:logoImg,
 				loginForm: {
-					username: 'zhangxiqin',
-					password: '123456'
+					username: 'admin',
+					password: '12356'
 				},
 				rules: {
 					username: [
@@ -170,9 +170,6 @@
 	.form-fade-enter, .form-fade-leave-active {
 	  	transform: translate3d(0, -50px, 0);
 	  	opacity: 0;
-	}
-	.loginForm{
-		
 	}
 	.sanFangArea{
 		border-top: 1px solid #DCDFE6;

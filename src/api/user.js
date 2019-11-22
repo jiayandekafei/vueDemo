@@ -29,21 +29,21 @@ const user = {
     return instance.get(base.dev + '/user/grouptree/' + userId)
   },
   // delete user
-  deleteUser (userId) {
-    return instance.delete(base.dev + '/user/' + userId)
+  deleteUser (para) {
+    return instance.post(base.dev + '/user/delete', JSON.stringify(para))
   },
-  // delete user
+  // delete mutil user
   batchDeleteUser (para) {
-    return instance.post(base.dev + '/user/deleteBatch', para)
+    return instance.post(base.dev + '/user/deleteBatch', JSON.stringify(para))
   },
   // check user's password
-  checkPassword (para) {
-    return instance.get(base.dev + '/user/password', para)
+  checkPassword (params) {
+    return instance.get(base.dev + '/user/password', {params})
   },
 
   // update password
   updatePassword (para) {
-    return instance.post(base.dev + 'user/password', JSON.stringify(para))
+    return instance.post(base.dev + '/user/password', JSON.stringify(para))
   }
 }
 

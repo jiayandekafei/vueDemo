@@ -100,7 +100,7 @@ export default {
          userId: getToken('userid'),
          username:this.infoForm.username,
 	       email:this.infoForm.email,
-		     job_title:this.infoForm.job,
+		     jobTitle:this.infoForm.job,
 	       groups: []
         };
        var groups=[];
@@ -108,8 +108,8 @@ export default {
        children.forEach(element => {
           if(element.checked===true){
              var group={};
-            group.group_id = element.id;
-            group.role_id = element.radio;
+            group.groupId = element.id;
+            group.roleId = element.radio;
             groups.push(group);
           }
        });

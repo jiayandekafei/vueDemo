@@ -5,8 +5,8 @@
 			  <div class='titleArea rflex'>
 					 	<img class="logo" :src="logo" alt="pagoda">
 				</div>
-		    	<el-form :model="registerForm" :rules="rules" ref="registerForm" class="registerForm">
-				  <el-form-item prop="username">
+		<el-form :model="registerForm" :rules="rules" ref="registerForm" class="registerForm">
+		 <el-form-item prop="username">
              <span class="fa-tips"><i class="el-icon-user"></i></span>
             <el-input v-model="registerForm.username" auto-complete="off" placeholder="please input username" ></el-input>
           </el-form-item>
@@ -146,17 +146,19 @@
 					if (valid) {
 						this.logining = true;
 						this.$api.login.register({
-						username:  _this.registerForm.username,
-						password:  _this.registerForm.password,
-						email:  _this.registerForm.eamil,
-						job:  _this.registerForm.job
+						username: _this.registerForm.username,
+						password: _this.registerForm.password,
+						email: _this.registerForm.email,
+						jobTitle: _this.registerForm.job
 						}).then(res => {
 								this.$message({
 									showClose: true,
 									duration: 3000,
 									message: '注册成功，3秒后将跳到登录页面'
 									});
-						//_this.$router.push('/login');
+									  // set username to vuex
+						this.$store.commit("SET_NAME",_this.registerForm.username)
+						_this.$router.push('/login');
 						});
 					}
 				});

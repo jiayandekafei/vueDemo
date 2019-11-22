@@ -1,3 +1,4 @@
+
 /**
  * 存储localStorage
  */
@@ -197,4 +198,20 @@ export const getJobs = () => {
   }]
 
   return jobs
+}
+
+// get Jobs
+export const getRoles = () => {
+  const roles = [{
+    value: 'admin',
+    text: 'admin'
+  }, {
+    value: 'PM',
+    text: 'PM'
+  }, {
+    value: 'user',
+    text: 'user'
+  }]
+
+  return roles
 }

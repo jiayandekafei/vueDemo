@@ -8,8 +8,6 @@ import xss from 'xss'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import './mockjs'
-
 // i18n国际化
 import i18n from '@/lang'
 // iconSvg

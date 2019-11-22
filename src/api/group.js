@@ -6,6 +6,11 @@ const group = {
   getGroupList (params) {
     return instance.get(base.dev + '/group/list', {params})
   },
+
+  // group list
+  getGroupFilterList () {
+    return instance.get(base.dev + '/group/filterList')
+  },
   // group detail
   getGroupInfo (groupId) {
     return instance.get(base.dev + '/group/' + groupId)

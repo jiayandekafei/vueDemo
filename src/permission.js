@@ -33,17 +33,20 @@ router.beforeEach((to, from, next) => {
         api.user.getUserInfo(getToken('userid')).then().then(res => { // 根据token拉取用户信息
           let userinfo = res.data.data
           let roles = []
+          let groupRoles = {}
           if (userinfo.superuser === 'Y') {
             roles.push('admin')
           } else {
             userinfo.groups.forEach(item => {
               roles.push(item.roleId)
+              groupRoles[item.groupId] = item.roleId
             })
           }
           if (roles.length === 0) {
             roles.push('guest')
           }
           store.commit('SET_ROLES', roles)
+          store.commit('SET_GROUP_ROLE', groupRoles)
           store.commit('SET_NAME', userinfo.username)
           store.commit('SET_AVATAR', userinfo.username)
           store.commit('SET_USERINFO', userinfo)

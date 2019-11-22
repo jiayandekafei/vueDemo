@@ -29,7 +29,6 @@ export default {
         this.tableHeight = document.body.clientHeight - 300;
       });
     },
-    
 
   }
 };
