@@ -26,8 +26,8 @@
         <el-table-column prop="status" label="状态" :formatter="formatStatus" :filters="fields.status.filter.list" :filter-method="filterStatus" align="center"></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="320">
           <template slot-scope="scope">
-            <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)">编辑</el-button>
-            <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" >删除</el-button>
+            <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)" :disabled="editDisable">编辑</el-button>
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" :disabled="deleteDisable" >删除</el-button>
             <el-button type="success" icon="edit" size="mini"  @click="onApprove(scope.row)" :disabled="scope.row.aprroveButDisable">通过</el-button>
             <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="scope.row.rejectButDisable">拒绝</el-button>
           </template>
@@ -35,6 +35,8 @@
       </el-table>
       <pagination :pageTotal="pageTotal" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" ></pagination>
       <addUserDialog v-if="addUserDialog.show" :isShow="addUserDialog.show" :dialogRow="addUserDialog.dialogRow" @getUserList="getUserList" @closeDialog="hideaddUserDialog"></addUserDialog>
+      <rejectDialog v-if="rejectDialog.show" :isShow="rejectDialog.show" :dialogRow="rejectDialog.dialogRow" @getUserList="getUserList" @closeDialog="hideRejectDialog"></rejectDialog>
+    </div>
     </div>
   </div>
 </template>
@@ -42,14 +44,17 @@
 <script>
 import { mapGetters } from "vuex";
 import * as mutils from "@/utils/mUtils";
+import * as comUtils from "@/utils/comUtils";
 import SearchItem from "./components/searchItem";
 import addUserDialog from "./components/addUserDialog";
+import rejectDialog from "./components/rejectDialog";
 import Pagination from "@/components/pagination";
- import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 export default {
   data() {
     return {
-  
+      editDisable :!comUtils.isSuperUserOrPM(),
+      deleteDisable :!comUtils.isSuperUserOrPM(),
       tableData: [],
       tableHeight: 0,
       loading: true,
@@ -58,6 +63,10 @@ export default {
       editid: "",
       rowIds: [],
       addUserDialog: {
+        show: false,
+        dialogRow: {}
+      },
+      rejectDialog: {
         show: false,
         dialogRow: {}
       },
@@ -82,7 +91,7 @@ export default {
         },
         group: {
           filter: {
-            list: this.getFilterGroups(),
+            list: [],
             multiple: true
           }
         },
@@ -113,6 +122,7 @@ export default {
   components: {
     SearchItem,
     addUserDialog,
+    rejectDialog,
     Pagination
   },
   computed: {
@@ -134,7 +144,8 @@ export default {
       const _this = this;
       const currentUser = {
         userId: getToken('userid'),
-        superuser: getToken('superuser')
+        superuser: getToken('superuser'),
+        groups: comUtils.getCurrentUserGroups(),
       };
       const para = Object.assign({},currentUser,this.pageData,this.search);
       this.$api.user.getUserList(para).then(res => {
@@ -142,46 +153,36 @@ export default {
         _this.pageTotal = res.data.data.total;
         var _users = [];
         res.data.data.users.forEach(user => {
-          var _user = {   
-                   aprroveButDisable:this.isApproveEnable(user),
-                   rejectButDisable:this.isApproveEnable(user),
-                   groups : user.groups.length
-                   };
-          this.fields.status.filter.list.push()
-          var groupLength = user.groups.length;
-          if (user.groups.length === 0) {
-            this.editCommonUserData(_user, user);
-            _users.push(_user);
-          } else {
-            user.groups.forEach((group, index) => {
-              _user = { 
-                   aprroveButDisable:this.isApproveEnable(user),
-                   rejectButDisable:this.isApproveEnable(user),
-                   groups : user.groups.length
-                   };
-              this.editCommonUserData(_user, user);
-              _user.groupId = group.groupId;
-              _user.groupname = group.groupName;
-              _user.rolename = group.roleName;
-
-              _users.push(_user);
-            });
+        var _user = { 
+              aprroveButDisable:this.isApproveEnable(user),
+              rejectButDisable:this.isApproveEnable(user),
+              groupLength : user.groupLength,
+              userId : user.userId,
+              username : user.username,
+              status : user.status,
+              email : user.email,
+              job : user.jobTitle,
+              };
+          // user group
+          if(user.groupLength>0){
+            _user.groupId = user.groups[0].groupId;
+            _user.roleId = user.groups[0].roleId;
+            _user.groupname = user.groups[0].groupName;
+            _user.rolename = user.groups[0].roleName;
+            if(!_this.fields.group.filter.list.some(item =>item.value===user.groups[0].groupName )){
+                  var _group = {
+                    value: user.groups[0].groupName,
+                    text: user.groups[0].groupName
+                  }
+                  _this.fields.group.filter.list.push(_group)
+            }
           }
+        _users.push(_user);
         });
         _this.tableData = _users;
       });
     },
 
-    editCommonUserData(_user, user) {
-      _user.userId = user.userId;
-      _user.username = user.username;
-      _user.status = user.status;
-      _user.email = user.email;
-      _user.job = user.jobTitle;
-      var groups = user.group;
-      groups[0].label=this.$t('commons.groupRole')
-      _user.group = groups;
-    },
     // 显示用户弹框
     showAddUserDialog(val) {
       this.$store.commit("SET_USER_DIALOG_TITLE", val);
@@ -189,6 +190,14 @@ export default {
     },
     hideaddUserDialog() {
       this.addUserDialog.show = false;
+    },
+    // 显示reject弹框
+    showRejectDialog(val) {
+      this.rejectDialog.show = true;
+    },
+    // 隐藏reject弹框
+    hideRejectDialog(val) {
+      this.rejectDialog.show = false;
     },
     // 上下分页
     handleCurrentChange(val) {
@@ -214,8 +223,25 @@ export default {
     },
     // 编辑操作方法
     onEditUser(row) {
-      this.addUserDialog.dialogRow = row;
-      this.showAddUserDialog();
+       const para = {
+        groups: comUtils.getCurrentUserGroups(),
+        superuser : getToken('superuser') ,
+        type:2,
+        groupId:row.groupId,
+        roleId:row.roleId
+      }
+      this.$api.user.getGroupTree(para).then(res => {
+        const groups = res.data.data;
+        groups[0].label = this.$t("commons.groupRole");
+        row.group = JSON.parse(JSON.stringify(groups));
+        this.addUserDialog.dialogRow = row;
+        this.showAddUserDialog();
+      });
+    },
+    // reject
+    onReject(row) {
+      this.rejectDialog.dialogRow = row;
+      this.showRejectDialog();
     },
     // 删除数据
     onDeleteUser(row) {
@@ -224,7 +250,7 @@ export default {
       }).then(() => {
          const param = {userId: row.userId,
                         groupId: row.groupId,
-                        groupLength: row.groups };
+                        groupLength: row.groupLength };
           this.$api.user.deleteUser(param).then(res => {
             this.$message({
               message: "删除成功",
@@ -244,7 +270,7 @@ export default {
             var user={
               userId: item.userId,
               groupId: item.groupId,
-              groupLength: item.groups
+              groupLength: item.groupLength
             }
            users.push(user);
          });
@@ -267,13 +293,21 @@ export default {
     },
     // approve user request
     onApprove(row) {
-          this.$api.user.approveUser(row.userId).then(res => {
-            this.$message({
-              message: "approved",
-              type: "success"
-            });
-            this.getUserList();
+      const para ={
+          userId:row.userId,
+          groups:[{
+              userId:row.userId,
+              roleId:row.roleId,
+              groupId:row.groupId,
+           }]
+        }
+        this.$api.user.approve(para).then(res => {
+          this.$message({
+            message: "approved",
+            type: "success"
           });
+          this.getUserList();
+        });
     },
     // 当用户手动勾选数据行的 Checkbox 时触发的事件
     selectTable(val) {
@@ -289,7 +323,7 @@ export default {
     },
     setSearchBtn(val) {
       let isFlag = true;
-      if (val.length > 0) {
+      if (val.length > 0  && comUtils.isSuperUserOrPM()) {
         isFlag = false;
       } else {
         isFlag = true;
@@ -322,32 +356,14 @@ export default {
     },
 
     isApproveEnable(row) {
-       if ('W'===row.status && ('Y'===getToken('superuser')
-                               ||'2'===store.getters.groupRole[row.groupId]
-                                )){
+       if ('W'===row.status && comUtils.isSuperUserOrPM()){
            return false;
        }else{
            return true;
        }
     },
-
-    
-  // get groups
-  getFilterGroups () {
-    var filterGroups = []
-      this.$api.group.getGroupFilterList().then(res => {
-      res.data.data.groups.forEach(group => {
-        var _group = {
-          value: group.groupname,
-          text: group.groupname
-        }
-        filterGroups.push(_group)
-      })
-    })
-     return filterGroups
    }
-  }
-};
+ };
 </script>
 
 <style lang="less" scoped>

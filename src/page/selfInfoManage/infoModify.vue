@@ -42,6 +42,7 @@
 <script>
   import * as mutils from "@/utils/mUtils";
   import { getToken } from '@/utils/auth'
+  import * as comUtils from "@/utils/comUtils";
 export default {
   data() {
     return {
@@ -155,7 +156,14 @@ export default {
     
     getGroupRole(){
        let _this=this;
-			 this.$api.user.getGroupTree(getToken('userid')).then(res => {
+       const para = {
+        groups: comUtils.getCurrentUserGroups(0),
+        superuser : 'Y' ,
+        type:1,
+        groupId:0,
+        roleId:0
+      }
+			 this.$api.user.getGroupTree(para).then(res => {
               const groups = res.data.data;
               groups[0].label=this.$t('commons.groupRole')
               _this.infoForm.group= JSON.parse(JSON.stringify(groups));

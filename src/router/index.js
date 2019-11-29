@@ -55,21 +55,6 @@ export const constantRouterMap = [
         component: () => import('@/page/index/index')
       }
     ]
-  },
-  {
-    path: '/test',
-    name: 'test',
-    component: () => import('@/page/test')
-  },
-  {
-    path: '/test1',
-    name: 'test1',
-    component: () => import('@/page/test1')
-  },
-  {
-    path: '/test2',
-    name: 'test2',
-    component: () => import('@/page/test2')
   }
 ]
 
@@ -81,7 +66,7 @@ export const asyncRouterMap = [
     meta: {
       title: '用户管理',
       icon: 'fa-user',
-      roles: ['admin', 'PM', 'user']
+      roles: [1, 2, 3]
     },
     component: Layout,
     children: [
@@ -92,7 +77,7 @@ export const asyncRouterMap = [
           title: '用户一览',
           icon: 'fa-asterisk',
           routerType: 'leftmenu',
-          roles: ['admin', 'PM', 'user']
+          roles: [1, 2, 3]
         },
         component: () => import('@/page/user/userList')
       }
@@ -104,7 +89,7 @@ export const asyncRouterMap = [
     meta: {
       title: '客户管理',
       icon: 'fa-customer',
-      roles: ['admin', 'PM', 'user']
+      roles: [1, 2, 3]
     },
     component: Layout,
     children: [
@@ -115,7 +100,7 @@ export const asyncRouterMap = [
           title: '客户一览',
           icon: 'fa-customer',
           routerType: 'leftmenu',
-          roles: ['admin', 'PM', 'user']
+          roles: [1, 2, 3]
         },
         component: () => import('@/page/customer/customerList')
       }
@@ -127,7 +112,7 @@ export const asyncRouterMap = [
     meta: {
       title: '项目管理',
       icon: 'fa-project',
-      roles: ['admin', 'PM', 'user']
+      roles: [1, 2, 3]
     },
     component: Layout,
     children: [
@@ -138,7 +123,7 @@ export const asyncRouterMap = [
           title: '项目一览',
           icon: 'fa-project',
           routerType: 'leftmenu',
-          roles: ['admin', 'PM', 'user']
+          roles: [1, 2, 3]
         },
         component: () => import('@/page/group/groupList')
       }

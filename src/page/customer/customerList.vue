@@ -17,12 +17,12 @@
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
         <el-table-column type="selection" align="center" width="40"></el-table-column>
-        <el-table-column prop="customername" label="客户姓名" width="240"></el-table-column>
+        <el-table-column prop="customername" label="客户姓名" sortable width="240"></el-table-column>
         <el-table-column prop="description" label="简介" ></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="180">
           <template slot-scope="scope">
-            <el-button type="primary" icon="edit" size="mini" @click="onEditCustomer(scope.row)">编辑</el-button>
-            <el-button type="danger" icon="delete" size="mini" @click="onDeleteCustomer(scope.row)" >删除</el-button>
+            <el-button type="primary" icon="edit" size="mini" @click="onEditCustomer(scope.row)" :disabled="editDisable">编辑</el-button>
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteCustomer(scope.row)" :disabled="deleteDisable" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -45,13 +45,16 @@
 <script>
 import { mapGetters } from "vuex";
 import * as mutils from "@/utils/mUtils";
+import * as comUtils from "@/utils/comUtils";
 import SearchItem from "./components/searchItem";
 import addCustomerDialog from "./components/addCustomerDialog";
 import Pagination from "@/components/pagination";
- import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth';
 export default {
   data() {
     return {
+      editDisable :!comUtils.isSuperUserOrPM(),
+      deleteDisable :!comUtils.isSuperUserOrPM(),
       tableData: [],
       tableHeight: 0,
       loading: true,
@@ -94,6 +97,7 @@ export default {
     getCustomerList() {
       const _this = this;
       const currentCustomer = {
+        groups: comUtils.getCurrentUserGroups(),
         userId: getToken('userid'),
         superuser: getToken('superuser'),
         isSelect:false
@@ -136,7 +140,7 @@ export default {
       this.$confirm("确认删除该记录吗?", "提示", {
         type: "warning"
       }).then(() => {
-          this.$api.customer.deleteCustomer(row.customer_id).then(res => {
+          this.$api.customer.deleteCustomer(row.customerId).then(res => {
             this.$message({
               message: "删除成功",
               type: "success"
@@ -151,7 +155,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          const ids = this.rowIds.map(item => item.customer_id).toString();
+          const ids = this.rowIds.map(item => item.customerId).toString();
           const para = { customerIds: ids };
           this.$api.customer.batchDeleteCustomer(para).then(res => {
             console.log(res)
@@ -178,7 +182,7 @@ export default {
     },
     setSearchBtn(val) {
       let isFlag = true;
-      if (val.length > 0) {
+      if (val.length > 0 && comUtils.isSuperUserOrPM()) {
         isFlag = false;
       } else {
         isFlag = true;

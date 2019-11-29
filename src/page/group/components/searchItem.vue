@@ -15,7 +15,7 @@
 
             <el-form-item class="btnRight">
                 <el-button type="primary" size ="mini" icon="view" @click='onBatchDelGroup()' :disabled="searchBtnDisabled">批量删除</el-button>
-                <el-button type="primary" size ="mini" icon="view" @click='onAddGroup()'>添加</el-button>
+                <el-button type="primary" size ="mini" icon="view" @click='onAddGroup()' :disabled="addBtnDisabled">添加</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -23,11 +23,12 @@
 
 <script>
    import { mapGetters } from 'vuex'
-
+   import * as comUtils from "@/utils/comUtils";
   export default {
       name:'searchItem',
       data(){
           return {
+            addBtnDisabled:!comUtils.isSuperUserOrPM(),
             search_data:{
                 name:''
             },

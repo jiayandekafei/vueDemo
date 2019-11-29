@@ -15,23 +15,23 @@
         :label-width="dialog.formLabelWidth"
         style="margin:10px;width:auto;"
       >
-        <el-form-item prop="Groupname" label="项目名:">
-          <el-input type="text" v-model="form.Groupname"  :disabled="GroupNameTxtDisable"></el-input>
+        <el-form-item prop="groupname" label="项目名:">
+          <el-input type="text" v-model="form.groupname"  :disabled="groupNameTxtDisable"></el-input>
         </el-form-item>
-            <el-form-item  label="客户" prop="customer">
-              <el-select  v-model="infoForm.customer" auto-complete="off" placeholder="please input customer title">
+            <el-form-item  label="客户" prop="customerId">
+              <el-select  v-model="form.customerId" auto-complete="off" placeholder="please input customer customername">
                 <el-option v-for="item in customers" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
           </el-form-item>
-        <el-form-item prop="notes_server" label="notes服务器:">
-          <el-input type="text" v-model="form.notes_server" ></el-input>
+        <el-form-item prop="server" label="notes服务器:">
+          <el-input type="text" v-model="form.server" ></el-input>
         </el-form-item>
-        <el-form-item prop="notes_user" label="notes服务器用户:">
-          <el-input type="text" v-model="form.notes_user" ></el-input>
+        <el-form-item prop="serverUser" label="notes服务器用户:">
+          <el-input type="text" v-model="form.serverUser" ></el-input>
         </el-form-item>
-        <el-form-item prop="notes_password" label="notes服务器密码:">
-          <el-input type="text" v-model="form.notes_password"></el-input>
+        <el-form-item prop="serverPassword" label="notes服务器密码:">
+          <el-input type="text" v-model="form.serverPassword"></el-input>
         </el-form-item>
         <el-form-item prop="description" label="简介:">
           <el-input type="text" v-model="form.description"></el-input>
@@ -71,9 +71,11 @@ export default {
         }
       };
     return {
-      GroupNameTxtDisable: true,
+      groupNameTxtDisable: true,
       isVisible: this.isShow,
+      customers:[],
       form: {
+        customer:''
       },
       form_rules: {
         groupname: [
@@ -83,7 +85,7 @@ export default {
       //详情弹框信息
       dialog: {
         width: "400px",
-        formLabelWidth: "120px"
+        formLabelWidth: "150px"
       }
     };
   },
@@ -95,14 +97,14 @@ export default {
     ...mapGetters(["addGroupDialog"])
   },
   created() {
+     this.getCustomerList()
     if (this.addGroupDialog.type === "edit") {
       this.form = this.dialogRow;
-      this.GroupNameTxtDisable=true
+      this.groupNameTxtDisable=true
       //this.$refs["form"].resetFields();
     } else {
      // this.$refs["form"].resetFields();
-     this.GroupNameTxtDisable=false
-     this.getCustomerList()
+     this.groupNameTxtDisable=false
     }
   },
   mounted() {},
@@ -111,9 +113,18 @@ export default {
     // 获取客户列表数据
     getCustomerList() {
       const _this = this;
-      const para ={isSelect:true}
-      this.$api.customer.getCustomerList(para).then(res => {
-        _this.customers = res.data.data.customers;
+      const para ={isSelect:true,
+                   pageNo:1,
+                   limit:30
+                   }
+        this.$api.customer.getCustomerList(para).then(res => {
+        res.data.data.customers.forEach(customer=>{
+              var cust ={
+                value:customer.customerId,
+                label:customer.customername
+              }
+              this.customers.push(cust)
+        });
       });
     },
 
@@ -142,7 +153,7 @@ export default {
             });
           } else {
             // add
-            this.$api.Group.addGroup(para).then(res => {
+            this.$api.group.addGroup(para).then(res => {
               this.$message({
                 message: "新增成功",
                 type: "success"

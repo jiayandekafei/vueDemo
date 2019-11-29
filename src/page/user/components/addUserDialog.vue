@@ -61,8 +61,9 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth';
 import * as mutils from "@/utils/mUtils";
+import * as comUtils from "@/utils/comUtils";
 export default {
   name: "addUserDialogs",
   data() {
@@ -132,7 +133,14 @@ export default {
       this.userNameTxtDisable=true
       //this.$refs["form"].resetFields();
     } else {
-      this.getGroupRole(0);
+      const para = {
+        groups: comUtils.getCurrentUserGroups(),
+        superuser : getToken('superuser') ,
+        type:1,
+        groupId:0,
+        roleId:0
+      }
+      this.getGroupRole(para);
      // this.$refs["form"].resetFields();
      this.userNameTxtDisable=false
     }
@@ -159,9 +167,9 @@ export default {
          node.data.radio= ''
         } 
     },
-    getGroupRole(userId) {
+    getGroupRole(para) {
       let _this = this;
-      this.$api.user.getGroupTree(userId).then(res => {
+      this.$api.user.getGroupTree(para).then(res => {
         const groups = res.data.data;
         groups[0].label = this.$t("commons.groupRole");
         _this.form.group = JSON.parse(JSON.stringify(groups));

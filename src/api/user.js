@@ -1,5 +1,6 @@
 import base from './base' // 导入接口域名列表
 import instance from './http' // 导入http中创建的axios实例
+import qs from 'qs'
 
 const user = {
   // user list
@@ -25,8 +26,8 @@ const user = {
   },
 
   // get group tree
-  getGroupTree (userId) {
-    return instance.get(base.dev + '/user/grouptree/' + userId)
+  getGroupTree (params) {
+    return instance.get(base.dev + '/user/grouptree', {params})
   },
   // delete user
   deleteUser (para) {
@@ -44,6 +45,15 @@ const user = {
   // update password
   updatePassword (para) {
     return instance.post(base.dev + '/user/password', JSON.stringify(para))
+  },
+
+  // approve
+  approve (para) {
+    return instance.post(base.dev + '/user/approve', JSON.stringify(para))
+  },
+  // approve
+  reject (para) {
+    return instance.post(base.dev + '/user/reject', JSON.stringify(para))
   }
 }
 

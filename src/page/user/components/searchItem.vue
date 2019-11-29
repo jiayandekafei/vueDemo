@@ -24,12 +24,13 @@
 <script>
    import { mapGetters } from 'vuex'
    import { getToken } from '@/utils/auth'
+   import * as comUtils from "@/utils/comUtils";
 
   export default {
       name:'searchItem',
       data(){
           return {
-            addBtnDisabled:true,
+            addBtnDisabled:!comUtils.isSuperUserOrPM(),
             search_data:{
                 name:''
             },
@@ -45,7 +46,7 @@
 
       },
       created(){
-          this.setAddBtn()
+          
       },
       methods:{
           onScreeoutUser(searchForm){
@@ -61,15 +62,9 @@
           },
           onBatchDelUser(){
               this.$emit("onBatchDelUser");
-          },
-          setAddBtn(){
-              const roles = this.$store.getters.roles;
-                if(getToken('superuser')==='Y' || roles.indexof('PM')!==undefined){
-                   this.addBtnDisabled=false
-                }
           }
       }
-  }
+   }
 </script>
 
 <style lang="less" scoped>

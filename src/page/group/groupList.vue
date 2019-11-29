@@ -17,16 +17,16 @@
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
         <el-table-column type="selection" align="center" width="40"></el-table-column>
-        <el-table-column prop="groupname" label="项目姓名" width="240"></el-table-column>
+        <el-table-column prop="groupname" label="项目姓名"  sortable width="240"></el-table-column>
         <el-table-column prop="customername" label="客户名" width="240"></el-table-column>
-        <el-table-column v-if="showNotesInfo()" prop="notes_server" label="notes服务器" width="240"></el-table-column>
-        <el-table-column v-if="showNotesInfo()" prop="notes_user" label="notes服务器用户名" width="240"></el-table-column>
-        <el-table-column v-if="showNotesInfo()" prop="notes_password" label="notes服务器密码" width="240"></el-table-column>
+        <el-table-column v-if="showNotesInfo()" prop="server" label="notes服务器" width="240"></el-table-column>
+        <el-table-column v-if="showNotesInfo()" prop="serverUser" label="notes服务器用户名" width="240"></el-table-column>
+        <el-table-column v-if="showNotesInfo()" prop="serverPassword" label="notes服务器密码" width="240"></el-table-column>
         <el-table-column prop="description" label="简介" ></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="180">
           <template slot-scope="scope">
-            <el-button type="primary" icon="edit" size="mini" @click="onEditGroup(scope.row)">编辑</el-button>
-            <el-button type="danger" icon="delete" size="mini" @click="onDeleteGroup(scope.row)" >删除</el-button>
+            <el-button type="primary" icon="edit" size="mini" @click="onEditGroup(scope.row)" :disabled="editDisable">编辑</el-button>
+            <el-button type="danger" icon="delete" size="mini" @click="onDeleteGroup(scope.row)" :disabled="deleteDisable">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -49,13 +49,16 @@
 <script>
 import { mapGetters } from "vuex";
 import * as mutils from "@/utils/mUtils";
+import * as comUtils from "@/utils/comUtils";
 import SearchItem from "./components/searchItem";
 import addGroupDialog from "./components/addGroupDialog";
 import Pagination from "@/components/pagination";
- import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth';
 export default {
   data() {
     return {
+      editDisable :!comUtils.isSuperUserOrPM(),
+      deleteDisable :!comUtils.isSuperUserOrPM(),
       tableData: [],
       tableHeight: 0,
       loading: true,
@@ -98,8 +101,8 @@ export default {
     getGroupList() {
       const _this = this;
       const currentGroup = {
-        userId: getToken('userid'),
-        superuser: getToken('superuser')
+        superuser: getToken('superuser'),
+        groups: comUtils.getCurrentUserGroups()
       };
       const para = Object.assign({},currentGroup,this.pageData,this.search);
       this.$api.group.getGroupList(para).then(res => {
@@ -181,7 +184,7 @@ export default {
     },
     setSearchBtn(val) {
       let isFlag = true;
-      if (val.length > 0) {
+      if (val.length > 0 && comUtils.isSuperUserOrPM()) {
         isFlag = false;
       } else {
         isFlag = true;

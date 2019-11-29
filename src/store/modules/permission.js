@@ -37,7 +37,7 @@ function filterTopRouters (data) {
 function hasPermission (roles, route) {
   // roles为权限身份数组
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.indexOf(role) >= 0)
+    return roles.some(item => route.meta.roles.indexOf(item) >= 0)
   } else {
     return true
   }
@@ -97,7 +97,7 @@ const permission = {
       return new Promise(resolve => {
         let roles = data.roles
         let accessedRouters = ''
-        if (roles.indexOf('admin') >= 0) {
+        if (roles.indexOf(1) >= 0) {
           // 如果是管理员，直接将权限路由赋值给新路由;
           accessedRouters = asyncRouterMap
         } else {

@@ -100,7 +100,7 @@ export const isEmpty = (keys) => {
     }
   }
 
-  if (keys instanceof Array && keys.length == 0) { // 数组
+  if (keys instanceof Array && keys.length === 0) { // 数组
     return true
   }
 }
@@ -200,7 +200,7 @@ export const getJobs = () => {
   return jobs
 }
 
-// get Jobs
+// get roles
 export const getRoles = () => {
   const roles = [{
     value: 'admin',

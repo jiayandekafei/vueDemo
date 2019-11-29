@@ -8,7 +8,7 @@ import {setTitle} from '@/utils/mUtils' // 设置浏览器头部标题
 
 // permission judge function
 function hasPermission (roles, permissionRoles) {
-  if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
+  if (roles.indexOf(1) >= 0) return true // admin permission passed directly
   if (!permissionRoles) return true
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
           let roles = []
           let groupRoles = {}
           if (userinfo.superuser === 'Y') {
-            roles.push('admin')
+            roles.push(1)
           } else {
             userinfo.groups.forEach(item => {
               roles.push(item.roleId)
@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
             })
           }
           if (roles.length === 0) {
-            roles.push('guest')
+            roles.push(4)
           }
           store.commit('SET_ROLES', roles)
           store.commit('SET_GROUP_ROLE', groupRoles)
