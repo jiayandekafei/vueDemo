@@ -1,7 +1,6 @@
 <template>
   <div class="fillcontain">
     <search-item
-      @showDialog="showAddGroupDialog"
       @searchList="getGroupList"
       @onBatchDelGroup="onBatchDelGroup"
     ></search-item>
@@ -52,10 +51,8 @@
 import { mapGetters } from "vuex";
 import * as mutils from "@/utils/mUtils";
 import * as comUtils from "@/utils/comUtils";
-import { getToken } from '@/utils/auth';
 import Pagination from "@/components/pagination";
-import SearchItem from "./components/searchItem";
-import addGroupDialog from "./components/addGroupDialog";
+import { getToken } from '@/utils/auth';
 export default {
   data() {
     return {

@@ -18,12 +18,12 @@
         <el-form-item prop="groupname" label="项目名:">
           <el-input type="text" v-model="form.groupname"  :disabled="groupNameTxtDisable"></el-input>
         </el-form-item>
-            <el-form-item  label="客户" prop="customerId">
+        <el-form-item  label="客户" prop="customerId">
               <el-select  v-model="form.customerId" auto-complete="off" placeholder="please input customer customername">
                 <el-option v-for="item in customers" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-          </el-form-item>
+        </el-form-item>
         <el-form-item prop="server" label="notes服务器:">
           <el-input type="text" v-model="form.server" ></el-input>
         </el-form-item>
@@ -32,6 +32,12 @@
         </el-form-item>
         <el-form-item prop="serverPassword" label="notes服务器密码:">
           <el-input type="text" v-model="form.serverPassword"></el-input>
+        </el-form-item>
+        <el-form-item prop="notesDBPath" label="notes DB路径:">
+          <el-input type="text" v-model="form.notesDBPath"></el-input>
+        </el-form-item>
+        <el-form-item prop="exportResultPath" label="notes DB导出结果路径:">
+          <el-input type="text" v-model="form.exportResultPath"></el-input>
         </el-form-item>
         <el-form-item prop="description" label="简介:">
           <el-input type="text" v-model="form.description"></el-input>

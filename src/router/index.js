@@ -130,6 +130,40 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/notesDBInfo',
+    name: 'notesDBInfo',
+    meta: {
+      title: 'notesDB信息管理',
+      icon: 'fa-user',
+      roles: [1, 2, 3]
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'notesAnalyze',
+        name: 'notesAnalyze',
+        meta: {
+          title: 'notes解析',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu',
+          roles: [1, 2, 3]
+        },
+        component: () => import('@/page/notesInfo/notesAnalyze')
+      },
+      {
+        path: 'dbList',
+        name: 'dbList',
+        meta: {
+          title: 'DB一览',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu',
+          roles: [1, 2, 3]
+        },
+        component: () => import('@/page/notesInfo/dbList')
+      }
+    ]
+  },
+  {
     path: '/infoManage',
     name: 'infoManage',
     meta: {
