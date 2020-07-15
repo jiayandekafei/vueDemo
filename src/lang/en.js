@@ -13,8 +13,13 @@ const en = {
     groupManage: 'projects',
     groupList: 'projectList',
     notesDBInfo: 'NotesDB Info',
-    notesAnalyze: 'Notes Analyze',
-    dbList: 'DB List',
+    dbExport: 'Notes Analyze',
+    dbSimilarity: 'DB Category',
+    dbList: 'DBList',
+    dbDetail:'DBDetail',
+    dbreference:'db reference relationship',
+    aae:'AAE',
+    aaeTransform:'AAE Transform',
     infoManage: 'Infos',
     infoShow: 'InfoShow',
     infoShow1: 'InfoShow1',
@@ -33,14 +38,12 @@ const en = {
     copyright: 'COPYRIGHT @ 2017 HOPERUN TECHNOLOGY CORP. ALL RIGHTS RESERVED'
   },
   index: {
-    yearLoss: 'Year Loss',
-    yearProfit: 'Year Profit',
-    potentialInvestor: 'Potential Investor',
-    intentionInvestor: 'Intention Investor',
-    waitExamineInvestor: 'Wait Examine Investor',
-    examiningInvestor: 'Examining Investor',
-    tenMillion: 'Ten Million',
-    person: 'P'
+    userNumber: 'Total User',
+    projectNumber: 'Total Prject',
+    customerNumber: 'Total Customer',
+    wattingUserNumber: 'Users watting for approve',
+    person: 'P',
+    customer: 'P'
   }
 }
 

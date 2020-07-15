@@ -105,9 +105,9 @@
 					checkPass: [
 						{ required: true, validator:validateSurepassword,trigger: 'blur' }
 					],
-					email: [
-						{ required: true,validator:validateEmail, trigger: 'blur' }
-					],
+					// email: [
+					// 	{ required: true,validator:validateEmail, trigger: 'blur' }
+					// ],
 					},
 				jobs: [{
 				value: 'PG',
@@ -121,13 +121,6 @@
 				}, {
 				value: 'PM',
 				label: 'PM'
-				}],
-				groups: [{
-				value: '01',
-				label: 'group'
-				}, {
-				value: '02',
-				label: 'group2'
 				}],
 		}
 	 },

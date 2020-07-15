@@ -1,7 +1,7 @@
 <template>
 	 <div class='bread_container' id="bread_container">
 	    <span @click="handleLefeMenu" class="bars"> 
-		    <i class="fa fa-bars"  :class="{isactive:changeBarDirection}"></i>
+		    <i class="el-icon-s-fold"  :class="{isactive:changeBarDirection}"></i>
 		</span>
         <el-breadcrumb class="breadcrumb" separator="/">
             <el-breadcrumb-item 

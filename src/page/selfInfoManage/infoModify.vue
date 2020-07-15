@@ -23,7 +23,7 @@
               <el-tree :data="infoForm.group" >
               <span class="custom-tree-node" slot-scope="{node,data}">
                 <el-radio v-if="showRadio(node)" v-model="node.parent.data.radio" :label="data.id" @change="setParent(node)" >{{ node.label }}</el-radio>
-                <el-checkbox v-else-if="showCheckbox(node)" v-model="data.checked" :label="data.id" @change="clearChildren(node)">{{ node.label}}</el-checkbox> 
+                <el-checkbox v-else-if="showCheckbox(node)" v-model="data.checked" :label="data.id" @change="clearChildren(node)" >{{ node.label}}</el-checkbox> 
                 <span v-else>{{ node.label }}</span>
               </span>
             </el-tree>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+/* eslint-disable */ 
   import * as mutils from "@/utils/mUtils";
   import { getToken } from '@/utils/auth'
   import * as comUtils from "@/utils/comUtils";
@@ -51,7 +52,7 @@ export default {
           username: '',
           email: '',
           job: '',
-          group: '',
+          group: [],
           jobs : ''
         },
        jobs : mutils.getJobs(),
@@ -79,7 +80,7 @@ export default {
    this.getGroupRole()
   },
   mounted() {
-    const userinfo  =this.$store.getters.userinfo
+    const userinfo =this.$store.getters.userinfo
     this.infoForm.username=userinfo.username
     this.infoForm.email=userinfo.email
     this.infoForm.job=userinfo.jobTitle
@@ -102,13 +103,15 @@ export default {
          username:this.infoForm.username,
 	       email:this.infoForm.email,
 		     jobTitle:this.infoForm.job,
-	       groups: []
+         groups: [],
+         groupChange:true
         };
        var groups=[];
        const children = this.infoForm.group[0].children;
        children.forEach(element => {
           if(element.checked===true){
              var group={};
+            group.userId= getToken('userid'),
             group.groupId = element.id;
             group.roleId = element.radio;
             groups.push(group);
@@ -125,11 +128,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //保存修改的相关信息
-          this.$api.user.updateUser(this.setReqBody() ).then(res =>{
-          let userinfo = this.infoForm;
-          this.$store.commit('SET_USERINFO', userinfo)
+         var para= this.setReqBody() ;
+          let oldgroups = this.$store.getters.userinfo.groups;
+          let newgroups = para.groups;
+          var groupChange = this.groupChangeCheck(oldgroups,newgroups);
+          this.$api.user.updateUser(para).then(res =>{
           this.showMessage("success", "update scussfully");
-          this.getGroupRole()
           location.reload
           });
         } else {
@@ -138,14 +142,31 @@ export default {
         }
       });
     },
+  
+    groupChangeCheck(oldgroup,newgroup){
+   // 判断数组的长度
+      if (oldgroup.length !== newgroup.length) {
+          return false
+      } else {
+          // 循环遍历数组的值进行比较
+          for (let i = 0; i < oldgroup.length; i++) {
+              if (oldgroup[i].roleId.toString() !== newgroup[i].roleId 
+                    || oldgroup[i].groupId !== newgroup[i].groupId) {
+                  return false
+              }
+          }
+          return true;
+      }
+    },
+
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
      showRadio(node){
-                return node.childNodes.length === 0 ? true : false
+                return node.childNodes.length === 0 
             },
     showCheckbox(node){
-        return node.childNodes.length === 3 ? true : false
+        return node.childNodes.length === 2 
     },
  
     clearChildren(node){
@@ -157,9 +178,10 @@ export default {
     getGroupRole(){
        let _this=this;
        const para = {
+        userId: getToken('userid'),
         groups: comUtils.getCurrentUserGroups(0),
-        superuser : 'Y' ,
-        type:1,
+        superuser : 'Y',
+        type:3,
         groupId:0,
         roleId:0
       }

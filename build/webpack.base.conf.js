@@ -35,6 +35,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      'download':path.resolve(__dirname, '../src/download')
     }
   },
   module: {

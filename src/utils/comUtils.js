@@ -23,3 +23,16 @@ export const getCurrentUserGroups = (role) => {
   }
   return groups.join(',')
 }
+
+// get similarity compare type
+export const getCompareTypes = () => {
+  const types = [{
+    value: 1,
+    label: '主form'
+  }, {
+    value: 2,
+    label: 'Filed数最多的form'
+  }]
+
+  return types
+}

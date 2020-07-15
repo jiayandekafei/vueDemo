@@ -30,7 +30,7 @@ router.beforeEach((to, from, next) => {
     } else {
       // 用户登录成功之后，每次点击路由都进行了角色的判断;
       if (store.getters.roles.length === 0) {
-        api.user.getUserInfo(getToken('userid')).then().then(res => { // 根据token拉取用户信息
+        api.user.getUserInfo(getToken('userid')).then(res => { // 根据token拉取用户信息
           let userinfo = res.data.data
           let roles = []
           let groupRoles = {}

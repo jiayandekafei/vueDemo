@@ -13,8 +13,13 @@ const zh = {
     groupManage: '项目管理',
     groupList: '项目一览',
     notesDBInfo: 'NotesDB管理',
-    notesAnalyze: 'Notes解析',
+    dbExport: 'Notes解析',
+    dbSimilarity:'DB分类',
     dbList: 'DB一览',
+    dbDetail:'DB详细信息',
+    dbreference:'DB 关联关系',
+    aae:'AAE',
+    aaeTransform:'AAE转换',
     infoManage: '个人信息管理',
     infoShow: '个人信息',
     infoShow1: '个人信息子菜单1',
@@ -26,21 +31,19 @@ const zh = {
     infoModify1: '修改个人信息',
     modifyPassword: '修改密码',
     modifyPassword1: '修改密码',
-    groupRole: '所属项目及其属性',
+    groupRole: '所属项目及其角色',
     errorPage: '错误页面',
     page401: '401',
     page404: '404',
     copyright: ' 版权所有 (c)     润和软件股份有限公司 Pagoda Team'
   },
   index: {
-    yearLoss: '年度总盈亏',
-    yearProfit: '年度收益率',
-    potentialInvestor: '潜在投资人',
-    intentionInvestor: '意向投资人',
-    waitExamineInvestor: '待审投资人',
-    examiningInvestor: '审核中投资人',
-    tenMillion: '千万元',
-    person: '人'
+    userNumber: '用户总数',
+    projectNumber: '项目总数',
+    customerNumber: '客户总数',
+    wattingUserNumber: '待审核用户数',
+    person: '人',
+    customer: '个'
   }
 }
 

@@ -1,6 +1,5 @@
 import base from './base' // 导入接口域名列表
 import instance from './http' // 导入http中创建的axios实例
-import qs from 'qs'
 
 const user = {
   // user list
@@ -51,9 +50,18 @@ const user = {
   approve (para) {
     return instance.post(base.dev + '/user/approve', JSON.stringify(para))
   },
-  // approve
+
+   // approve
+   batchApprove (para) {
+    return instance.post(base.dev + '/user/approveBatch', JSON.stringify(para))
+  },
+  // reject
   reject (para) {
     return instance.post(base.dev + '/user/reject', JSON.stringify(para))
+  },
+  // get user distribution data
+  getUserPieData () {
+    return instance.get(base.dev + '/user/pie')
   }
 }
 

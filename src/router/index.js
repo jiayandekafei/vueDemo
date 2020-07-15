@@ -41,7 +41,7 @@ export const constantRouterMap = [
     component: Layout,
     meta: {
       title: '首页',
-      icon: 'fa-dashboard'
+      icon: 'el-icon-menu'
     },
     noDropdown: true,
     children: [
@@ -49,7 +49,7 @@ export const constantRouterMap = [
         path: 'index',
         meta: {
           title: '首页',
-          icon: 'fa-index',
+          icon: 'el-icon-menu',
           routerType: 'leftmenu'
         },
         component: () => import('@/page/index/index')
@@ -65,7 +65,7 @@ export const asyncRouterMap = [
     name: 'userManage',
     meta: {
       title: '用户管理',
-      icon: 'fa-user',
+      icon: 'el-icon-user',
       roles: [1, 2, 3]
     },
     component: Layout,
@@ -80,6 +80,16 @@ export const asyncRouterMap = [
           roles: [1, 2, 3]
         },
         component: () => import('@/page/user/userList')
+      }, {
+        path: 'userApprove',
+        name: 'userApprove',
+        meta: {
+          title: '用户审批',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu',
+          roles: [1, 2]
+        },
+        component: () => import('@/page/user/waitUserList')
       }
     ]
   },
@@ -88,7 +98,7 @@ export const asyncRouterMap = [
     name: 'customerManage',
     meta: {
       title: '客户管理',
-      icon: 'fa-customer',
+      icon: 'el-icon-s-custom',
       roles: [1, 2, 3]
     },
     component: Layout,
@@ -98,7 +108,6 @@ export const asyncRouterMap = [
         name: 'customerList',
         meta: {
           title: '客户一览',
-          icon: 'fa-customer',
           routerType: 'leftmenu',
           roles: [1, 2, 3]
         },
@@ -111,7 +120,7 @@ export const asyncRouterMap = [
     name: 'groupManage',
     meta: {
       title: '项目管理',
-      icon: 'fa-project',
+      icon: 'el-icon-s-marketing',
       roles: [1, 2, 3]
     },
     component: Layout,
@@ -121,7 +130,7 @@ export const asyncRouterMap = [
         name: 'groupList',
         meta: {
           title: '项目一览',
-          icon: 'fa-project',
+          icon: 'el-icon-s-marketing',
           routerType: 'leftmenu',
           roles: [1, 2, 3]
         },
@@ -134,21 +143,32 @@ export const asyncRouterMap = [
     name: 'notesDBInfo',
     meta: {
       title: 'notesDB信息管理',
-      icon: 'fa-user',
+      icon: 'el-icon-data-analysis',
       roles: [1, 2, 3]
     },
     component: Layout,
     children: [
       {
-        path: 'notesAnalyze',
-        name: 'notesAnalyze',
+        path: 'dbExport',
+        name: 'dbExport',
         meta: {
-          title: 'notes解析',
+          title: 'notes导出',
           icon: 'fa-asterisk',
           routerType: 'leftmenu',
           roles: [1, 2, 3]
         },
-        component: () => import('@/page/notesInfo/notesAnalyze')
+        component: () => import('@/page/notesInfo/dbExport')
+      },
+      {
+        path: 'dbSimilarity',
+        name: 'dbSimilarity',
+        meta: {
+          title: 'DB分类',
+          icon: 'fa-asterisk',
+          routerType: 'leftmenu',
+          roles: [1, 2, 3]
+        },
+        component: () => import('@/page/notesInfo/dbSimilarity')
       },
       {
         path: 'dbList',
@@ -159,7 +179,52 @@ export const asyncRouterMap = [
           routerType: 'leftmenu',
           roles: [1, 2, 3]
         },
-        component: () => import('@/page/notesInfo/dbList')
+        component: () => import('@/page/notesInfo/dbInfo/exportedDBInfoList')
+      },
+      {
+        path: 'dbDetail/:dbName',
+        name: 'dbDetail',
+        meta: {
+          title: 'DB详细信息',
+          icon: 'fa-asterisk',
+          routerType: 'topmenu',
+          roles: [1, 2, 3]
+        },
+        component: () => import('@/page/notesInfo/dbInfo/dbDetail')
+      },
+      {
+        path: 'dbreference',
+        name: 'dbreference',
+        meta: {
+          title: 'DB详细信息',
+          icon: 'el-icon-rank',
+          routerType: 'leftmenu',
+          roles: [1, 2, 3]
+        },
+        component: () => import('@/page/notesInfo/dbInfo/dbReference')
+      },
+    ]
+  },
+  {
+    path: '/aae',
+    name: 'aae',
+    meta: {
+      title: 'AAE',
+      icon: 'el-icon-s-data',
+      roles: [1, 2, 3]
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'aaeTransform',
+        name: 'aaeTransform',
+        meta: {
+          title: 'AAE转换',
+          icon: 'el-icon-s-marketing',
+          routerType: 'leftmenu',
+          roles: [1, 2, 3]
+        },
+        component: () => import('@/page/aae/aaeTransform')
       }
     ]
   },
@@ -168,7 +233,7 @@ export const asyncRouterMap = [
     name: 'infoManage',
     meta: {
       title: '个人信息管理',
-      icon: 'fa-asterisk'
+      icon: 'el-icon-setting'
     },
     component: Layout,
     children: [

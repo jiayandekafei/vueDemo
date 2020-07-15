@@ -62,7 +62,11 @@ export default {
     onSubmit(form) {
           const para = {
              userId: this.dialogRow.userId,
-             description :this.dialogRow.reason
+             groupId:this.dialogRow.groupId,
+             sender:this.$store.getters.name,
+             description :this.dialogRow.reason,
+             type:2,
+             acceptor:this.dialogRow.username
           }
           this.$api.user.reject(para).then(res => {
             this.$message({

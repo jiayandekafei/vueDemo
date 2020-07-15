@@ -30,7 +30,10 @@
               :value="item.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> 
+         <el-form-item  v-if="isSuperuser==='Y'" label="超级管理员">
+               <el-switch v-model="form.superuser"> </el-switch>
+         </el-form-item>
         <el-form-item>
           <el-tree :data="form.group">
             <span class="custom-tree-node" slot-scope="{node,data}">
@@ -99,10 +102,12 @@ export default {
     return {
       userNameTxtDisable: true,
       isVisible: this.isShow,
+      isSuperuser: getToken('superuser'),
       form: {
         job: "",
         username: "",
-        group: ""
+        group: [],
+        superuser:false
       },
       jobs: mutils.getJobs(),
       form_rules: {
@@ -130,6 +135,7 @@ export default {
   created() {
     if (this.addUserDialog.type === "edit") {
       this.form = this.dialogRow;
+      this.form.superuser=this.dialogRow.tempSuper==='Y'
       this.userNameTxtDisable=true
       //this.$refs["form"].resetFields();
     } else {
@@ -153,13 +159,13 @@ export default {
       this.$emit("closeDialog");
     },
     showRadio(node){
-                return node.childNodes.length === 0 ? true : false
+                return node.childNodes.length === 0 
             },
     setParent(node){
       node.parent.data.checked=true
     },
     showCheckbox(node){
-        return node.childNodes.length === 3 ? true : false
+        return node.childNodes.length === 2 
     },
  
     clearChildren(node){
@@ -180,8 +186,10 @@ export default {
          userId:this.form.userId,   
          username:this.form.username,
 	       email:this.form.email,
-		     jobTitle:this.form.job,
-	       groups: []
+         jobTitle:this.form.job,
+         superuser:this.form.superuser,
+         groups: [],
+         groupChange:false
         };
 	     var groups= []
        const children = this.form.group[0].children;

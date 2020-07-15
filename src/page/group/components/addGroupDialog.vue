@@ -36,7 +36,7 @@
         <el-form-item prop="notesDBPath" label="notes DB路径:">
           <el-input type="text" v-model="form.notesDBPath"></el-input>
         </el-form-item>
-        <el-form-item prop="exportResultPath" label="notes DB导出结果路径:">
+        <el-form-item prop="exportResultPath" label="导出路径:">
           <el-input type="text" v-model="form.exportResultPath"></el-input>
         </el-form-item>
         <el-form-item prop="description" label="简介:">

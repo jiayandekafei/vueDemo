@@ -8,7 +8,7 @@
                 <router-view></router-view><!--页面渲染入口-->
             </div>
             <footerNav></footerNav>
-           <!-- <backTop :ele="$refs.menu_right"></backTop>  -->
+            <backTop :ele="$refs.menu_right"></backTop>  
         </div>
     </div>
 </template>
@@ -19,7 +19,7 @@
 	import LeftMenu from './leftMenu.vue';
 	import Bread from './bread.vue';
 	import FooterNav from './footerNav.vue';
-	// import backTop from 'cps/backTop';
+	import backTop from '@/components/backTop';
 
     export default {
         name: 'home',
@@ -34,7 +34,8 @@
             HeadNav,
             LeftMenu,
             Bread,
-            FooterNav
+            FooterNav,
+            backTop
         },
         created() {
         },

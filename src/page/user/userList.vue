@@ -17,19 +17,20 @@
        
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
-        <el-table-column type="selection" align="center" width="40"></el-table-column>
-        <el-table-column prop="username" label="用户姓名"  sortable width="240"></el-table-column>
+        <el-table-column type="selection" align="center" width="50"></el-table-column>
+        <el-table-column prop="username" label="用户姓名"  sortable ></el-table-column>
         <el-table-column prop="email" label="邮箱" width="280"></el-table-column>
         <el-table-column prop="groupname" label="所属项目" align="center" :filters="fields.group.filter.list" :filter-method="filterGroup"></el-table-column>
-        <el-table-column prop="rolename" label="角色" align="center" width="100" :filters="fields.role.filter.list" :filter-method="filterRole"></el-table-column>
-        <el-table-column prop="job" label="职位" align="center" width="100" :filters="fields.job.filter.list" :filter-method="filterJob"></el-table-column>
-        <el-table-column prop="status" label="状态" :formatter="formatStatus" :filters="fields.status.filter.list" :filter-method="filterStatus" align="center"></el-table-column>
-        <el-table-column prop="operation" align="center" label="操作" width="320">
+        <el-table-column prop="rolename" label="角色" align="center":filters="fields.role.filter.list" :filter-method="filterRole"></el-table-column>
+        <el-table-column prop="job" label="职位" align="center"  :filters="fields.job.filter.list" :filter-method="filterJob"></el-table-column>
+       <el-table-column prop="status" label="状态" :formatter="formatStatus" :filters="fields.status.filter.list" :filter-method="filterStatus" align="center"></el-table-column> 
+        <el-table-column prop="superuser" label="超级管理员"  align="center" ></el-table-column>
+        <el-table-column prop="operation" align="center" label="操作" >
           <template slot-scope="scope">
             <el-button type="primary" icon="edit" size="mini" @click="onEditUser(scope.row)" :disabled="editDisable">编辑</el-button>
             <el-button type="danger" icon="delete" size="mini" @click="onDeleteUser(scope.row)" :disabled="deleteDisable" >删除</el-button>
-            <el-button type="success" icon="edit" size="mini"  @click="onApprove(scope.row)" :disabled="scope.row.aprroveButDisable">通过</el-button>
-            <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="scope.row.rejectButDisable">拒绝</el-button>
+            <!-- <el-button type="success" icon="edit" size="mini"  @click="onApprove(scope.row)" :disabled="scope.row.aprroveButDisable">通过</el-button>
+            <el-button type="warning" icon="edit" size="mini" @click="onReject(scope.row)" :disabled="scope.row.rejectButDisable">拒绝</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -146,6 +147,7 @@ export default {
         userId: getToken('userid'),
         superuser: getToken('superuser'),
         groups: comUtils.getCurrentUserGroups(),
+        isapprove:false
       };
       const para = Object.assign({},currentUser,this.pageData,this.search);
       this.$api.user.getUserList(para).then(res => {
@@ -162,6 +164,7 @@ export default {
               status : user.status,
               email : user.email,
               job : user.jobTitle,
+              superuser: user.superuser
               };
           // user group
           if(user.groupLength>0){
@@ -234,15 +237,12 @@ export default {
         const groups = res.data.data;
         groups[0].label = this.$t("commons.groupRole");
         row.group = JSON.parse(JSON.stringify(groups));
+        row.tempSuper=row.superuser
         this.addUserDialog.dialogRow = row;
         this.showAddUserDialog();
       });
     },
-    // reject
-    onReject(row) {
-      this.rejectDialog.dialogRow = row;
-      this.showRejectDialog();
-    },
+   
     // 删除数据
     onDeleteUser(row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -291,24 +291,7 @@ export default {
         })
         .catch(() => {});
     },
-    // approve user request
-    onApprove(row) {
-      const para ={
-          userId:row.userId,
-          groups:[{
-              userId:row.userId,
-              roleId:row.roleId,
-              groupId:row.groupId,
-           }]
-        }
-        this.$api.user.approve(para).then(res => {
-          this.$message({
-            message: "approved",
-            type: "success"
-          });
-          this.getUserList();
-        });
-    },
+  
     // 当用户手动勾选数据行的 Checkbox 时触发的事件
     selectTable(val) {
       this.rowIds=val;

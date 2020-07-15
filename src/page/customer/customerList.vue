@@ -16,7 +16,7 @@
         @select-all="selectAll"
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="180"></el-table-column>
-        <el-table-column type="selection" align="center" width="40"></el-table-column>
+        <el-table-column type="selection" align="center" width="50"></el-table-column>
         <el-table-column prop="customername" label="客户姓名" sortable width="240"></el-table-column>
         <el-table-column prop="description" label="简介" ></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="180">

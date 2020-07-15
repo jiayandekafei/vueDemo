@@ -15,8 +15,15 @@ const login = {
   // logout
   logout () {
     return instance.get(base.dev + '/signout')
+  },
+  // message
+  getMessages (params) {
+    return instance.get(base.dev + '/message', {params})
+  },
+  // get index statistics message
+  getStatistics () {
+    return instance.get(base.dev + '/statistics')
   }
-
 }
 
 export default login

@@ -86,7 +86,16 @@ const user = {
       return new Promise((resolve, reject) => {
         api.login.logout().then(response => {
           commit('SET_ROLES', [])
+          commit('SET_ROLES', [])
+          commit('SET_GROUP_ROLE', {})
+          commit('SET_NAME', '')
+          commit('SET_AVATAR', '')
+          commit('SET_USERINFO', {})
+          commit('SET_TOKEN', '')
+          commit('SET_USERID', '')
           removeToken('Token')
+          removeToken('userid')
+          removeToken('superuser')
           resolve()
         })
       })

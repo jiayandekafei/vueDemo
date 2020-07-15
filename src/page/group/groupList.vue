@@ -16,14 +16,14 @@
         @select-all="selectAll"
        >
         <el-table-column v-if="idFlag" prop="id" label="id" align="center" width="5"></el-table-column>
-        <el-table-column type="selection" align="center" width="40"></el-table-column>
+        <el-table-column type="selection" align="center" width="50"></el-table-column>
         <el-table-column prop="groupname" label="项目姓名"  sortable width="180"></el-table-column>
         <el-table-column prop="customername" label="客户名" width="180"></el-table-column>
-        <el-table-column v-if="showNotesInfo()" prop="server" label="notes服务器" width="130"></el-table-column>
-        <el-table-column v-if="showNotesInfo()" prop="serverUser" label="notes服务器用户名" width="150"></el-table-column>
-        <el-table-column v-if="showNotesInfo()" prop="serverPassword" label="notes服务器密码" width="150"></el-table-column>
+        <el-table-column v-if="showNotesInfo(this)" prop="server" label="notes服务器" width="130"></el-table-column>
+        <el-table-column v-if="showNotesInfo(this)" prop="serverUser" label="notes服务器用户名" width="150"></el-table-column>
+        <el-table-column v-if="showNotesInfo(this)" prop="serverPassword" label="notes服务器密码" width="150"></el-table-column>
         <el-table-column prop="notesDBPath" label="notes DB路径" width="150"></el-table-column>
-        <el-table-column prop="exportResultPath" label="notes DB导出结果路径" width="240"></el-table-column>
+        <el-table-column prop="exportResultPath" label="notes DB导出路径" width="240"></el-table-column>
         <el-table-column prop="description" label="简介" ></el-table-column>
         <el-table-column prop="operation" align="center" label="操作" width="150">
           <template slot-scope="scope">
@@ -194,7 +194,8 @@ export default {
       this.$store.commit("SET_SEARCHBTN_DISABLED", isFlag);
     },
     // 判断是否显示notes info
-    showNotesInfo() {
+    showNotesInfo(row) {
+       const groupRoles = this.$store.getters.groupRole
       return getToken('superuser')=== 'Y' ? true : false
     },
   }

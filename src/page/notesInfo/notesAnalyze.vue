@@ -72,6 +72,10 @@
                     dbName: [
                         { required: true, message: '请输入DB名称', trigger: 'blur' },
                     ],
+                   
+                    groupId: [
+                        { required: true, message: '请选择项目组', trigger: 'blur' },
+                    ],
                     
                },
                simiRules: {
@@ -95,9 +99,18 @@
                         if(formName === 'simiForm'){
                             this.showMessage('success','修改密码成功~');
                         }else if(formName === 'exportForm'){ 
-                            
+                            var param={ type: this.exportForm.type,
+                                        groupId:this.exportForm.groupId,
+                                        dbName:this.exportForm.dbName
+                                        }; 
+                            this.$api.notesInfo.exportDBInfo(param).then(res =>{
+                                      this.$message({
+                                            message: "导出",
+                                            type: "success"
+                                        });
+                                    });
                         }
-                    } else {
+                     } else {
                         return false;
                     }
                 });
